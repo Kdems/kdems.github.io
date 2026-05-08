@@ -1,9 +1,0 @@
-<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">SKYBAR Finance logo</title>
-  <desc id="desc">A stylized upward bar chart inside a circle.</desc>
-  <circle cx="48" cy="48" r="44" fill="#67E8F9"/>
-  <path d="M25 66V48H36V66H25Z" fill="#08111F"/>
-  <path d="M43 66V36H54V66H43Z" fill="#08111F"/>
-  <path d="M61 66V26H72V66H61Z" fill="#08111F"/>
-  <path d="M24 72H74" stroke="#08111F" stroke-width="6" stroke-linecap="round"/>
-</svg>
