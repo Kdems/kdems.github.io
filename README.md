@@ -1,9 +1,3 @@
- (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
-diff --git a/README.md b/README.md
-index bc62d9929605916638d99d486099924747ff01a9..729cd94298c33fe50453edb79042008a51c4bc81 100644
---- a/README.md
-+++ b/README.md
-@@ -1,52 +1,59 @@
 -# SKYBAR Finance Dashboard — Website File Structure
 +# SKYBAR Finance Dashboard
 +
