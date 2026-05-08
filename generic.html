@@ -1,1 +1,52 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Operations Review | SKYBAR Finance Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+<body data-page="generic">
+  <main class="page-shell">
+    <nav class="page-nav" aria-label="Primary navigation">
+      <a class="nav-link" href="index.html">Dashboard</a>
+      <a class="nav-link active" href="generic.html" aria-current="page">Operations Review</a>
+      <a class="nav-link" href="elements.html">UI Library</a>
+    </nav>
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">Reusable page layout</p>
+        <h1>Monthly Operations Review</h1>
+      </div>
+      <a class="button secondary" href="index.html">Return to dashboard</a>
+    </header>
+    <section class="content-layout">
+      <article class="panel span-8">
+        <div class="panel-header"><div><p class="label">Executive summary</p><h2>Finance review format</h2></div></div>
+        <p class="copy">Use this layout for SKYBAR internal reviews: current results, period filter context, operating actions, and accountable follow-up for restaurant profitability.</p>
+        <div class="review-grid">
+          <div class="review-card"><span>Revenue pacing</span><strong>MTD</strong><small>Use dashboard entries as the source of truth.</small></div>
+          <div class="review-card"><span>Cost controls</span><strong>Daily</strong><small>Review food, beverage, and fixed cost ratios.</small></div>
+          <div class="review-card"><span>Variance</span><strong>Budget</strong><small>Compare total revenue against daily budget.</small></div>
+        </div>
+      </article>
+      <article class="panel span-4">
+        <div class="panel-header"><div><p class="label">Review cadence</p><h2>Checklist</h2></div></div>
+        <table>
+          <thead><tr><th>Control</th><th>Owner</th></tr></thead>
+          <tbody>
+            <tr><td>Enter daily sales and costs</td><td>Manager</td></tr>
+            <tr><td>Review budget variance</td><td>GM</td></tr>
+            <tr><td>Approve cost exceptions</td><td>Finance</td></tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

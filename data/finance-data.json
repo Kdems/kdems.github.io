@@ -1,0 +1,42 @@
+{
+  "restaurant": "SKYBAR",
+  "currency": "USD",
+  "entries": [
+    {
+      "date": "2026-05-01",
+      "foodRevenue": 18240,
+      "beverageRevenue": 11480,
+      "foodCost": 5310,
+      "beverageCost": 2870,
+      "fixedCost": 6425,
+      "dailyBudget": 28500
+    },
+    {
+      "date": "2026-05-02",
+      "foodRevenue": 21450,
+      "beverageRevenue": 13760,
+      "foodCost": 6110,
+      "beverageCost": 3210,
+      "fixedCost": 6590,
+      "dailyBudget": 33000
+    },
+    {
+      "date": "2026-05-03",
+      "foodRevenue": 16980,
+      "beverageRevenue": 10240,
+      "foodCost": 4920,
+      "beverageCost": 2510,
+      "fixedCost": 6310,
+      "dailyBudget": 27000
+    },
+    {
+      "date": "2026-04-30",
+      "foodRevenue": 17440,
+      "beverageRevenue": 10320,
+      "foodCost": 5010,
+      "beverageCost": 2595,
+      "fixedCost": 6200,
+      "dailyBudget": 27500
+    }
+  ]
+}

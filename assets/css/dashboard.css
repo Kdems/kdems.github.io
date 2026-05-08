@@ -1,0 +1,59 @@
+.kpi-grid, .workspace-grid, .content-layout, .component-grid, .review-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.kpi-grid {
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  margin-bottom: 1rem;
+}
+
+.kpi-card {
+  min-height: 8.2rem;
+  padding: 1rem;
+}
+
+.kpi-card span, .review-card span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.kpi-card strong, .review-card strong {
+  display: block;
+  margin: 0.55rem 0;
+  font-size: clamp(1.25rem, 1.8vw, 1.9rem);
+}
+
+.kpi-card small, .review-card small { color: var(--muted); }
+
+.workspace-grid, .content-layout { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.entry-panel { grid-column: span 4; }
+.table-panel { grid-column: span 8; }
+.entry-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; }
+.entry-form .field:first-of-type, .entry-form .form-actions { grid-column: 1 / -1; }
+.form-actions { margin-top: 0.25rem; }
+
+.component-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.review-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 1rem; }
+.review-card { padding: 1rem; }
+.span-4 { grid-column: span 4; }
+.span-6 { grid-column: span 6; }
+.span-8 { grid-column: span 8; }
+
+.empty-state {
+  color: var(--muted);
+  text-align: center;
+  padding: 1.5rem 0.6rem;
+}
+
+@media (max-width: 1300px) {
+  .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .entry-panel, .table-panel, .span-4, .span-6, .span-8 { grid-column: span 12; }
+}
+
+@media (max-width: 720px) {
+  .kpi-grid, .component-grid, .review-grid, .entry-form { grid-template-columns: 1fr; }
+}

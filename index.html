@@ -1,1 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SKYBAR Finance Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+<body data-page="dashboard">
+  <main class="dashboard-shell">
+    <header class="dashboard-header">
+      <div>
+        <p class="eyebrow">Restaurant finance controls</p>
+        <h1>SKYBAR Finance Dashboard</h1>
+      </div>
+      <div class="filter-bar" aria-label="Dashboard filters">
+        <label class="field compact" for="year-filter">
+          <span>Year</span>
+          <select id="year-filter" name="year"></select>
+        </label>
+        <label class="field compact" for="month-filter">
+          <span>Month</span>
+          <select id="month-filter" name="month"></select>
+        </label>
+      </div>
+    </header>
 
+    <section class="kpi-grid" id="kpi-grid" aria-label="Finance KPI summary"></section>
+
+    <section class="workspace-grid">
+      <article class="panel entry-panel">
+        <div class="panel-header">
+          <div>
+            <p class="label">Entry section</p>
+            <h2>Daily finance entry</h2>
+          </div>
+          <span class="badge" id="form-mode">New entry</span>
+        </div>
+
+        <form id="entry-form" class="entry-form" autocomplete="off">
+          <input type="hidden" id="editing-date" value="" />
+          <label class="field" for="entry-date"><span>Date</span><input id="entry-date" name="date" type="date" required /></label>
+          <label class="field" for="food-revenue"><span>Food Revenue</span><input id="food-revenue" name="foodRevenue" type="number" min="0" step="0.01" inputmode="decimal" /></label>
+          <label class="field" for="beverage-revenue"><span>Beverage Revenue</span><input id="beverage-revenue" name="beverageRevenue" type="number" min="0" step="0.01" inputmode="decimal" /></label>
+          <label class="field" for="food-cost"><span>Food Cost</span><input id="food-cost" name="foodCost" type="number" min="0" step="0.01" inputmode="decimal" /></label>
+          <label class="field" for="beverage-cost"><span>Beverage Cost</span><input id="beverage-cost" name="beverageCost" type="number" min="0" step="0.01" inputmode="decimal" /></label>
+          <label class="field" for="fixed-cost"><span>Fixed Cost</span><input id="fixed-cost" name="fixedCost" type="number" min="0" step="0.01" inputmode="decimal" /></label>
+          <label class="field" for="daily-budget"><span>Daily Budget</span><input id="daily-budget" name="dailyBudget" type="number" min="0" step="0.01" inputmode="decimal" /></label>
+          <div class="form-actions">
+            <button class="button primary" type="submit" id="save-entry">Save Entry</button>
+            <button class="button secondary" type="button" id="reset-form">Reset Form</button>
+          </div>
+        </form>
+        <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+      </article>
+
+      <article class="panel table-panel">
+        <div class="panel-header">
+          <div>
+            <p class="label">Table section</p>
+            <h2>Daily entries</h2>
+          </div>
+          <span class="badge" id="entry-count">0 entries</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Total Revenue</th>
+                <th>Total Cost</th>
+                <th>GOP</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody id="entries-table-body"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="assets/js/calculations.js"></script>
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/filters.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
