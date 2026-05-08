@@ -1,13 +1,5 @@
 # SKYBAR Finance Dashboard
 
-A clean, from-scratch executive finance dashboard for restaurant operations. The project is built as static HTML, CSS, JavaScript, and JSON data with no inherited templates or framework dependencies.
-
-## Pages
-
-- `index.html` — main restaurant finance dashboard with month/year filtering.
-- `generic.html` — reusable internal operations review layout.
-- `elements.html` — UI component library for dashboard controls and cards.
-
 ## Structure
 
 ```text
