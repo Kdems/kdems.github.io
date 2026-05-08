@@ -1,1 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SKYBAR Finance Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+<body data-page="dashboard">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand-lockup">
+        <div class="brand-mark">SB</div>
+        <div>
+          <p class="eyebrow">SKYBAR</p>
+          <h1>Finance</h1>
+        </div>
+      </div>
+      <nav class="nav-stack">
+        <a class="nav-link active" href="index.html" aria-current="page">Dashboard</a>
+        <a class="nav-link" href="generic.html">Operations Review</a>
+        <a class="nav-link" href="elements.html">UI Library</a>
+      </nav>
+      <section class="side-card">
+        <span class="label">Cash control</span>
+        <strong id="cash-position-side">$0</strong>
+        <small>Bank deposits less open payables</small>
+      </section>
+    </aside>
 
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Restaurant finance command center</p>
+          <h2>SKYBAR Finance Dashboard</h2>
+        </div>
+        <div class="topbar-actions">
+          <label class="field compact">
+            <span>Month</span>
+            <select id="month-filter" aria-label="Filter by month"></select>
+          </label>
+          <label class="field compact">
+            <span>Year</span>
+            <select id="year-filter" aria-label="Filter by year"></select>
+          </label>
+          <button class="button primary" id="save-view" type="button">Save view</button>
+        </div>
+      </header>
+
+      <section class="alert-strip" id="performance-alerts" aria-live="polite"></section>
+
+      <section class="kpi-grid" id="kpi-grid" aria-label="Financial KPIs"></section>
+
+      <section class="dashboard-grid">
+        <article class="panel span-8">
+          <div class="panel-header">
+            <div>
+              <span class="label">Revenue mix</span>
+              <h3>Sales by dining channel</h3>
+            </div>
+            <span class="badge" id="check-average-badge">Avg check $0</span>
+          </div>
+          <div class="chart-bars" id="revenue-chart"></div>
+        </article>
+
+        <article class="panel span-4">
+          <div class="panel-header">
+            <div>
+              <span class="label">Prime cost</span>
+              <h3>Food + labor</h3>
+            </div>
+          </div>
+          <div class="gauge" id="prime-cost-gauge">
+            <div class="gauge-value">0%</div>
+          </div>
+          <dl class="metric-list" id="prime-cost-list"></dl>
+        </article>
+
+        <article class="panel span-6">
+          <div class="panel-header">
+            <div>
+              <span class="label">Cost controls</span>
+              <h3>Expense variance</h3>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Category</th><th>Actual</th><th>Target</th><th>Variance</th></tr>
+              </thead>
+              <tbody id="expense-table"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel span-6">
+          <div class="panel-header">
+            <div>
+              <span class="label">Cash workflow</span>
+              <h3>Daily close controls</h3>
+            </div>
+          </div>
+          <ul class="close-list" id="close-controls"></ul>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/calculations.js"></script>
+  <script src="assets/js/filters.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
