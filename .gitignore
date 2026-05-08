@@ -1,19 +1,1 @@
-# Operating system files
-.DS_Store
-Thumbs.db
 
-# Editor/project files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Logs and temporary output
-*.log
-.tmp/
-tmp/
-
-# Dependency/build folders if tooling is added later
-node_modules/
-dist/
-build/
