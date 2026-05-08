@@ -1,8 +1,0 @@
-{
-  "quarters": [
-    { "quarter": "Q1", "revenue": 128000, "expenses": 81000 },
-    { "quarter": "Q2", "revenue": 146000, "expenses": 89500 },
-    { "quarter": "Q3", "revenue": 158500, "expenses": 94000 },
-    { "quarter": "Q4", "revenue": 174250, "expenses": 101750 }
-  ]
-}
