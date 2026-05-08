@@ -1,0 +1,151 @@
+name: Static site checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - work
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate static dashboard
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check assets/js/calculations.js
+          node --check assets/js/dashboard.js
+          node --check assets/js/app.js
+
+      - name: Audit local links and data bindings
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          import json
+          import re
+
+          root = Path('.')
+
+          class Parser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.refs = []
+                  self.ids = set()
+
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+
+                  if attrs.get('id'):
+                      self.ids.add(attrs['id'])
+
+                  for attr in ('href', 'src'):
+                      if attrs.get(attr):
+                          self.refs.append(attrs[attr])
+
+          for html in ['index.html', 'generic.html', 'elements.html']:
+              parser = Parser()
+              parser.feed((root / html).read_text())
+              broken = []
+
+              for ref in parser.refs:
+                  if ref.startswith(('http://', 'https://', '#', 'mailto:', 'tel:')):
+                      continue
+
+                  if not (root / ref).is_file():
+                      broken.append(ref)
+
+              if broken:
+                  raise SystemExit(f'{html} has broken references: {broken}')
+
+          dashboard = Parser()
+          dashboard.feed((root / 'index.html').read_text())
+          required_ids = {
+              'entry-form', 'entry-table', 'filter-year', 'filter-month',
+              'clear-filters', 'revenue-total', 'expense-total', 'cash-flow',
+              'net-margin', 'food-cost-percent', 'beverage-cost-percent',
+              'fixed-cost-percent', 'budget-variance', 'entry-count',
+              'trend-list', 'form-status'
+          }
+          missing_ids = required_ids - dashboard.ids
+
+          if missing_ids:
+              raise SystemExit(f'Missing dashboard IDs: {sorted(missing_ids)}')
+
+          json.loads((root / 'data/sample-data.json').read_text())
+
+          app_js = (root / 'assets/js/app.js').read_text()
+          for ref in re.findall(r"fetch\(['\"]([^'\"]+)", app_js):
+              if not (root / ref).is_file():
+                  raise SystemExit(f'Missing fetch target: {ref}')
+
+          print('Static site link and data-binding audit passed.')
+          PY
+
+      - name: Run calculation engine checks
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const vm = require('vm');
+          const context = {
+            window: {},
+            Intl,
+            Number,
+            Math,
+            Date,
+            console: { debug() {}, error: console.error }
+          };
+
+          context.window = context;
+          vm.createContext(context);
+          vm.runInContext(fs.readFileSync('assets/js/calculations.js', 'utf8'), context);
+
+          const entry = context.SkybarFinance.calculateEntry({
+            date: '2026-05-08',
+            foodRevenue: '1000',
+            beverageRevenue: '500',
+            otherRevenue: '',
+            foodCost: '300',
+            beverageCost: '100',
+            fixedCost: '200',
+            dailyBudget: '1400'
+          });
+          const expected = {
+            totalRevenue: 1500,
+            totalCost: 600,
+            foodCostPercent: 30,
+            beverageCostPercent: 20,
+            fixedCostPercent: 13.3,
+            gop: 900,
+            gopMarginPercent: 60,
+            budgetVariance: 100
+          };
+
+          for (const [key, value] of Object.entries(expected)) {
+            if (entry[key] !== value) {
+              throw new Error(`${key}: expected ${value}, got ${entry[key]}`);
+            }
+          }
+
+          const zero = context.SkybarFinance.calculateEntry({ date: '2026-05-09' });
+          if (zero.foodCostPercent !== 0 || zero.gopMarginPercent !== 0) {
+            throw new Error('Divide-by-zero protection failed');
+          }
+
+          console.log('Calculation engine checks passed.');
+          NODE
