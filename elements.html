@@ -12,24 +12,24 @@
   <link rel="stylesheet" href="assets/css/dashboard.css" />
 </head>
 <body data-page="elements">
-  <main class="page-shell">
-    <nav class="page-nav" aria-label="Primary navigation">
-      <a class="nav-link" href="index.html">Dashboard</a>
-      <a class="nav-link" href="generic.html">Operations Review</a>
-      <a class="nav-link active" href="elements.html" aria-current="page">UI Library</a>
-    </nav>
-    <header class="page-header">
-      <div>
-        <p class="eyebrow">Component library</p>
-        <h1>Dashboard UI Elements</h1>
-      </div>
-    </header>
-    <section class="component-grid">
-      <article class="panel"><p class="label">Buttons</p><div class="stack-row"><button class="button primary">Save Entry</button><button class="button secondary">Reset Form</button><button class="button danger">Delete</button></div></article>
-      <article class="panel"><p class="label">Metric card</p><div class="kpi-card"><span>MTD Revenue</span><strong>$128,420</strong><small class="positive">+$6,420 vs budget</small></div></article>
-      <article class="panel"><p class="label">Form controls</p><label class="field"><span>Food Revenue</span><input type="number" value="18420" /></label></article>
-      <article class="panel"><p class="label">Table</p><div class="table-wrap"><table><thead><tr><th>Date</th><th>GOP</th></tr></thead><tbody><tr><td>2026-05-01</td><td class="positive">$13,115</td></tr></tbody></table></div></article>
-    </section>
-  </main>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand-lockup"><div class="brand-mark">SB</div><div><p class="eyebrow">SKYBAR</p><h1>Finance</h1></div></div>
+      <nav class="nav-stack">
+        <a class="nav-link" href="index.html">Dashboard</a>
+        <a class="nav-link" href="generic.html">Operations Review</a>
+        <a class="nav-link active" href="elements.html" aria-current="page">UI Library</a>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <header class="topbar"><div><p class="eyebrow">Component library</p><h2>Dashboard UI Elements</h2></div></header>
+      <section class="component-grid">
+        <article class="panel"><span class="label">Buttons</span><div class="stack-row"><button class="button primary">Primary action</button><button class="button secondary">Secondary action</button><span class="badge positive">On target</span></div></article>
+        <article class="panel"><span class="label">Metric card</span><div class="kpi-card"><span>Net sales</span><strong>$128,420</strong><small class="positive">+6.4% vs target</small></div></article>
+        <article class="panel"><span class="label">Form controls</span><label class="field"><span>Accounting period</span><select><option>May 2026</option><option>April 2026</option></select></label></article>
+        <article class="panel"><span class="label">Table</span><div class="table-wrap"><table><thead><tr><th>Control</th><th>Status</th></tr></thead><tbody><tr><td>Deposit matched</td><td><span class="badge positive">Complete</span></td></tr><tr><td>AP aging</td><td><span class="badge warning">Review</span></td></tr></tbody></table></div></article>
+      </section>
+    </main>
+  </div>
 </body>
 </html>

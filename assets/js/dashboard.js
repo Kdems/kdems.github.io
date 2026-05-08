@@ -1,105 +1,80 @@
 (function exposeDashboard(global) {
   const calc = global.SKYBARCalculations;
 
-  function signedMoney(value) {
-    const rounded = calc.round(value);
-    return `${rounded > 0 ? '+' : ''}${calc.formatMoney(rounded)}`;
-  }
-
-  function toneForValue(value) {
-    if (value > 0) return 'positive';
-    if (value < 0) return 'negative';
-    return '';
-  }
-
-  function kpiCard(label, value, detail = '', tone = '') {
+  function kpi(label, value, detail, tone = '') {
     return `<article class="kpi-card"><span>${label}</span><strong>${value}</strong><small class="${tone}">${detail}</small></article>`;
   }
 
-  function renderKpis(entries) {
-    const summary = calc.summarize(entries);
+  function renderKpis(period) {
+    const margin = calc.margin(period);
+    const prime = calc.primeCost(period);
+    const salesVariance = calc.pct(period.netSales - period.salesTarget, period.salesTarget);
     document.querySelector('#kpi-grid').innerHTML = [
-      kpiCard('Daily Revenue', calc.formatMoney(summary.dailyRevenue), 'Latest filtered entry'),
-      kpiCard('MTD Revenue', calc.formatMoney(summary.mtdRevenue), `${summary.count} saved entr${summary.count === 1 ? 'y' : 'ies'}`),
-      kpiCard('Food Revenue', calc.formatMoney(summary.foodRevenue), 'Filtered period'),
-      kpiCard('Beverage Revenue', calc.formatMoney(summary.beverageRevenue), 'Filtered period'),
-      kpiCard('Food Cost %', calc.formatPercent(summary.foodCostPercent), 'Food cost / food revenue'),
-      kpiCard('Beverage Cost %', calc.formatPercent(summary.beverageCostPercent), 'Beverage cost / beverage revenue'),
-      kpiCard('Fixed Cost %', calc.formatPercent(summary.fixedCostPercent), 'Fixed cost / total revenue'),
-      kpiCard('GOP', calc.formatMoney(summary.gop), 'Revenue less total cost', toneForValue(summary.gop)),
-      kpiCard('Budget Variance', signedMoney(summary.budgetVariance), 'Revenue less daily budget', toneForValue(summary.budgetVariance))
+      kpi('Net sales', calc.money.format(period.netSales), `${salesVariance >= 0 ? '+' : ''}${salesVariance.toFixed(1)}% vs target`, salesVariance >= 0 ? 'positive' : 'negative'),
+      kpi('Operating profit', calc.money.format(margin.profit), `${margin.rate.toFixed(1)}% operating margin`, margin.rate >= 15 ? 'positive' : 'warning'),
+      kpi('Prime cost', `${prime.rate.toFixed(1)}%`, calc.money.format(prime.total), prime.rate <= 65 ? 'positive' : 'negative'),
+      kpi('Covers', calc.number.format(period.covers), `${calc.money.format(calc.averageCheck(period))} average check`, 'positive')
     ].join('');
   }
 
-  function renderTable(entries) {
-    const body = document.querySelector('#entries-table-body');
-    document.querySelector('#entry-count').textContent = `${entries.length} entr${entries.length === 1 ? 'y' : 'ies'}`;
-
-    if (!entries.length) {
-      body.innerHTML = '<tr><td class="empty-state" colspan="6">No finance entries for the selected period.</td></tr>';
-      return;
-    }
-
-    body.innerHTML = entries
-      .slice()
-      .sort((a, b) => a.date.localeCompare(b.date))
-      .map((entry) => {
-        const gop = calc.gop(entry);
-        return `
-          <tr>
-            <td>${entry.date}</td>
-            <td>${calc.formatMoney(calc.totalRevenue(entry))}</td>
-            <td>${calc.formatMoney(calc.totalCost(entry))}</td>
-            <td class="${toneForValue(gop)}">${calc.formatMoney(gop)}</td>
-            <td><button class="button small" type="button" data-action="edit" data-date="${entry.date}">Edit</button></td>
-            <td><button class="button small danger" type="button" data-action="delete" data-date="${entry.date}">Delete</button></td>
-          </tr>
-        `;
-      }).join('');
+  function renderRevenue(period) {
+    const max = Math.max(...period.channels.map((channel) => channel.sales));
+    document.querySelector('#revenue-chart').innerHTML = period.channels.map((channel) => `
+      <div class="bar-row">
+        <strong>${channel.name}</strong>
+        <div class="bar-track"><div class="bar-fill" style="width:${calc.pct(channel.sales, max)}%"></div></div>
+        <span>${calc.money.format(channel.sales)}</span>
+      </div>
+    `).join('');
+    document.querySelector('#check-average-badge').textContent = `Avg check ${calc.money.format(calc.averageCheck(period))}`;
   }
 
-  function render(entries) {
-    renderKpis(entries);
-    renderTable(entries);
+  function renderPrimeCost(period) {
+    const prime = calc.primeCost(period);
+    const gauge = document.querySelector('#prime-cost-gauge');
+    gauge.style.setProperty('--gauge', `${Math.min(prime.rate, 100) * 3.6}deg`);
+    gauge.querySelector('.gauge-value').textContent = `${prime.rate.toFixed(1)}%`;
+    document.querySelector('#prime-cost-list').innerHTML = [
+      ['Food cost', period.foodCost],
+      ['Beverage cost', period.beverageCost],
+      ['Labor cost', period.laborCost]
+    ].map(([label, value]) => `<div><dt>${label}</dt><dd>${calc.money.format(value)}</dd></div>`).join('');
   }
 
-  function setMessage(message, tone = '') {
-    const target = document.querySelector('#form-message');
-    target.textContent = message;
-    target.className = `form-message ${tone}`.trim();
+  function renderExpenses(period) {
+    document.querySelector('#expense-table').innerHTML = period.expenseControls.map((item) => {
+      const variance = calc.variance(item.actual, item.target);
+      const tone = variance <= 0 ? 'positive' : 'negative';
+      return `<tr><td>${item.category}</td><td>${calc.money.format(item.actual)}</td><td>${calc.money.format(item.target)}</td><td class="${tone}">${variance >= 0 ? '+' : ''}${calc.money.format(variance)}</td></tr>`;
+    }).join('');
   }
 
-  function fillForm(entry) {
-    document.querySelector('#editing-date').value = entry.date;
-    document.querySelector('#entry-date').value = entry.date;
-    document.querySelector('#food-revenue').value = entry.foodRevenue;
-    document.querySelector('#beverage-revenue').value = entry.beverageRevenue;
-    document.querySelector('#food-cost').value = entry.foodCost;
-    document.querySelector('#beverage-cost').value = entry.beverageCost;
-    document.querySelector('#fixed-cost').value = entry.fixedCost;
-    document.querySelector('#daily-budget').value = entry.dailyBudget;
-    document.querySelector('#form-mode').textContent = `Editing ${entry.date}`;
-    setMessage('Editing existing entry. Save to update this date.', 'warning');
+  function renderCloseControls(period) {
+    document.querySelector('#close-controls').innerHTML = period.closeControls.map((control) => {
+      const tone = control.status === 'Complete' ? 'positive' : 'warning';
+      return `<li><strong>${control.name}</strong><br><span class="badge ${tone}">${control.status}</span> <small>${control.owner}</small></li>`;
+    }).join('');
   }
 
-  function readForm() {
-    return calc.normalizeEntry({
-      date: document.querySelector('#entry-date').value,
-      foodRevenue: document.querySelector('#food-revenue').value,
-      beverageRevenue: document.querySelector('#beverage-revenue').value,
-      foodCost: document.querySelector('#food-cost').value,
-      beverageCost: document.querySelector('#beverage-cost').value,
-      fixedCost: document.querySelector('#fixed-cost').value,
-      dailyBudget: document.querySelector('#daily-budget').value
-    });
+  function renderAlerts(period) {
+    const prime = calc.primeCost(period);
+    const margin = calc.margin(period);
+    const alerts = [];
+    if (prime.rate > 65) alerts.push(`Prime cost is ${prime.rate.toFixed(1)}%; review labor scheduling and purchasing controls.`);
+    if (margin.rate < 15) alerts.push(`Operating margin is ${margin.rate.toFixed(1)}%; leadership review required.`);
+    if (!alerts.length) alerts.push('Restaurant finance controls are within the current executive thresholds.');
+    document.querySelector('#performance-alerts').innerHTML = alerts.map((alert) => `<div class="alert">${alert}</div>`).join('');
   }
 
-  function resetForm() {
-    document.querySelector('#entry-form').reset();
-    document.querySelector('#editing-date').value = '';
-    document.querySelector('#form-mode').textContent = 'New entry';
-    setMessage('');
+  function render(period) {
+    renderKpis(period);
+    renderRevenue(period);
+    renderPrimeCost(period);
+    renderExpenses(period);
+    renderCloseControls(period);
+    renderAlerts(period);
+    document.querySelector('#cash-position-side').textContent = calc.money.format(calc.cashPosition(period));
   }
 
-  global.SKYBARDashboard = { fillForm, readForm, render, resetForm, setMessage };
+  global.SKYBARDashboard = { render };
 })(window);

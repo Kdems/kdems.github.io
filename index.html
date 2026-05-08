@@ -12,82 +12,107 @@
   <link rel="stylesheet" href="assets/css/dashboard.css" />
 </head>
 <body data-page="dashboard">
-  <main class="dashboard-shell">
-    <header class="dashboard-header">
-      <div>
-        <p class="eyebrow">Restaurant finance controls</p>
-        <h1>SKYBAR Finance Dashboard</h1>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand-lockup">
+        <div class="brand-mark">SB</div>
+        <div>
+          <p class="eyebrow">SKYBAR</p>
+          <h1>Finance</h1>
+        </div>
       </div>
-      <div class="filter-bar" aria-label="Dashboard filters">
-        <label class="field compact" for="year-filter">
-          <span>Year</span>
-          <select id="year-filter" name="year"></select>
-        </label>
-        <label class="field compact" for="month-filter">
-          <span>Month</span>
-          <select id="month-filter" name="month"></select>
-        </label>
-      </div>
-    </header>
+      <nav class="nav-stack">
+        <a class="nav-link active" href="index.html" aria-current="page">Dashboard</a>
+        <a class="nav-link" href="generic.html">Operations Review</a>
+        <a class="nav-link" href="elements.html">UI Library</a>
+      </nav>
+      <section class="side-card">
+        <span class="label">Cash control</span>
+        <strong id="cash-position-side">$0</strong>
+        <small>Bank deposits less open payables</small>
+      </section>
+    </aside>
 
-    <section class="kpi-grid" id="kpi-grid" aria-label="Finance KPI summary"></section>
-
-    <section class="workspace-grid">
-      <article class="panel entry-panel">
-        <div class="panel-header">
-          <div>
-            <p class="label">Entry section</p>
-            <h2>Daily finance entry</h2>
-          </div>
-          <span class="badge" id="form-mode">New entry</span>
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Restaurant finance command center</p>
+          <h2>SKYBAR Finance Dashboard</h2>
         </div>
-
-        <form id="entry-form" class="entry-form" autocomplete="off">
-          <input type="hidden" id="editing-date" value="" />
-          <label class="field" for="entry-date"><span>Date</span><input id="entry-date" name="date" type="date" required /></label>
-          <label class="field" for="food-revenue"><span>Food Revenue</span><input id="food-revenue" name="foodRevenue" type="number" min="0" step="0.01" inputmode="decimal" /></label>
-          <label class="field" for="beverage-revenue"><span>Beverage Revenue</span><input id="beverage-revenue" name="beverageRevenue" type="number" min="0" step="0.01" inputmode="decimal" /></label>
-          <label class="field" for="food-cost"><span>Food Cost</span><input id="food-cost" name="foodCost" type="number" min="0" step="0.01" inputmode="decimal" /></label>
-          <label class="field" for="beverage-cost"><span>Beverage Cost</span><input id="beverage-cost" name="beverageCost" type="number" min="0" step="0.01" inputmode="decimal" /></label>
-          <label class="field" for="fixed-cost"><span>Fixed Cost</span><input id="fixed-cost" name="fixedCost" type="number" min="0" step="0.01" inputmode="decimal" /></label>
-          <label class="field" for="daily-budget"><span>Daily Budget</span><input id="daily-budget" name="dailyBudget" type="number" min="0" step="0.01" inputmode="decimal" /></label>
-          <div class="form-actions">
-            <button class="button primary" type="submit" id="save-entry">Save Entry</button>
-            <button class="button secondary" type="button" id="reset-form">Reset Form</button>
-          </div>
-        </form>
-        <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
-      </article>
-
-      <article class="panel table-panel">
-        <div class="panel-header">
-          <div>
-            <p class="label">Table section</p>
-            <h2>Daily entries</h2>
-          </div>
-          <span class="badge" id="entry-count">0 entries</span>
+        <div class="topbar-actions">
+          <label class="field compact">
+            <span>Month</span>
+            <select id="month-filter" aria-label="Filter by month"></select>
+          </label>
+          <label class="field compact">
+            <span>Year</span>
+            <select id="year-filter" aria-label="Filter by year"></select>
+          </label>
+          <button class="button primary" id="save-view" type="button">Save view</button>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Total Revenue</th>
-                <th>Total Cost</th>
-                <th>GOP</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody id="entries-table-body"></tbody>
-          </table>
-        </div>
-      </article>
-    </section>
-  </main>
+      </header>
 
-  <script src="assets/js/calculations.js"></script>
+      <section class="alert-strip" id="performance-alerts" aria-live="polite"></section>
+
+      <section class="kpi-grid" id="kpi-grid" aria-label="Financial KPIs"></section>
+
+      <section class="dashboard-grid">
+        <article class="panel span-8">
+          <div class="panel-header">
+            <div>
+              <span class="label">Revenue mix</span>
+              <h3>Sales by dining channel</h3>
+            </div>
+            <span class="badge" id="check-average-badge">Avg check $0</span>
+          </div>
+          <div class="chart-bars" id="revenue-chart"></div>
+        </article>
+
+        <article class="panel span-4">
+          <div class="panel-header">
+            <div>
+              <span class="label">Prime cost</span>
+              <h3>Food + labor</h3>
+            </div>
+          </div>
+          <div class="gauge" id="prime-cost-gauge">
+            <div class="gauge-value">0%</div>
+          </div>
+          <dl class="metric-list" id="prime-cost-list"></dl>
+        </article>
+
+        <article class="panel span-6">
+          <div class="panel-header">
+            <div>
+              <span class="label">Cost controls</span>
+              <h3>Expense variance</h3>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Category</th><th>Actual</th><th>Target</th><th>Variance</th></tr>
+              </thead>
+              <tbody id="expense-table"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel span-6">
+          <div class="panel-header">
+            <div>
+              <span class="label">Cash workflow</span>
+              <h3>Daily close controls</h3>
+            </div>
+          </div>
+          <ul class="close-list" id="close-controls"></ul>
+        </article>
+      </section>
+    </main>
+  </div>
+
   <script src="assets/js/storage.js"></script>
+  <script src="assets/js/calculations.js"></script>
   <script src="assets/js/filters.js"></script>
   <script src="assets/js/dashboard.js"></script>
   <script src="assets/js/app.js"></script>

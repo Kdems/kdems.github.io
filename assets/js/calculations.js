@@ -1,114 +1,33 @@
 (function exposeCalculations(global) {
-  const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-  const percentFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1, minimumFractionDigits: 1 });
+  const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  const number = new Intl.NumberFormat('en-US');
 
-  function toNumber(value) {
-    const numeric = Number(value);
-    return Number.isFinite(numeric) ? numeric : 0;
+  function pct(value, total) {
+    if (!total) return 0;
+    return (value / total) * 100;
   }
 
-  function round(value, decimals = 2) {
-    const factor = 10 ** decimals;
-    return Math.round((toNumber(value) + Number.EPSILON) * factor) / factor;
+  function margin(period) {
+    const profit = period.netSales - period.foodCost - period.beverageCost - period.laborCost - period.operatingExpenses;
+    return { profit, rate: pct(profit, period.netSales) };
   }
 
-  function safePercent(part, total) {
-    const denominator = toNumber(total);
-    if (denominator === 0) return 0;
-    return round((toNumber(part) / denominator) * 100, 1);
+  function primeCost(period) {
+    const total = period.foodCost + period.beverageCost + period.laborCost;
+    return { total, rate: pct(total, period.netSales) };
   }
 
-  function normalizeEntry(entry) {
-    return {
-      date: entry.date || '',
-      foodRevenue: round(entry.foodRevenue),
-      beverageRevenue: round(entry.beverageRevenue),
-      foodCost: round(entry.foodCost),
-      beverageCost: round(entry.beverageCost),
-      fixedCost: round(entry.fixedCost),
-      dailyBudget: round(entry.dailyBudget)
-    };
+  function averageCheck(period) {
+    return period.covers ? period.netSales / period.covers : 0;
   }
 
-  function totalRevenue(entry) {
-    return round(toNumber(entry.foodRevenue) + toNumber(entry.beverageRevenue));
+  function cashPosition(period) {
+    return period.bankDeposits - period.openPayables;
   }
 
-  function totalCost(entry) {
-    return round(toNumber(entry.foodCost) + toNumber(entry.beverageCost) + toNumber(entry.fixedCost));
+  function variance(actual, target) {
+    return actual - target;
   }
 
-  function foodCostPercent(entry) {
-    return safePercent(entry.foodCost, entry.foodRevenue);
-  }
-
-  function beverageCostPercent(entry) {
-    return safePercent(entry.beverageCost, entry.beverageRevenue);
-  }
-
-  function fixedCostPercent(entry) {
-    return safePercent(entry.fixedCost, totalRevenue(entry));
-  }
-
-  function gop(entry) {
-    return round(totalRevenue(entry) - totalCost(entry));
-  }
-
-  function budgetVariance(entry) {
-    return round(totalRevenue(entry) - toNumber(entry.dailyBudget));
-  }
-
-  function summarize(entries) {
-    const totals = entries.reduce((summary, entry) => {
-      const normalized = normalizeEntry(entry);
-      summary.foodRevenue += normalized.foodRevenue;
-      summary.beverageRevenue += normalized.beverageRevenue;
-      summary.foodCost += normalized.foodCost;
-      summary.beverageCost += normalized.beverageCost;
-      summary.fixedCost += normalized.fixedCost;
-      summary.dailyBudget += normalized.dailyBudget;
-      return summary;
-    }, { foodRevenue: 0, beverageRevenue: 0, foodCost: 0, beverageCost: 0, fixedCost: 0, dailyBudget: 0 });
-
-    const aggregateEntry = normalizeEntry({ date: '', ...totals });
-    const latestEntry = [...entries].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
-
-    return {
-      count: entries.length,
-      dailyRevenue: latestEntry ? totalRevenue(latestEntry) : 0,
-      mtdRevenue: totalRevenue(aggregateEntry),
-      foodRevenue: aggregateEntry.foodRevenue,
-      beverageRevenue: aggregateEntry.beverageRevenue,
-      foodCostPercent: foodCostPercent(aggregateEntry),
-      beverageCostPercent: beverageCostPercent(aggregateEntry),
-      fixedCostPercent: fixedCostPercent(aggregateEntry),
-      gop: gop(aggregateEntry),
-      budgetVariance: budgetVariance(aggregateEntry)
-    };
-  }
-
-  function formatMoney(value) {
-    return currencyFormatter.format(round(value));
-  }
-
-  function formatPercent(value) {
-    return `${percentFormatter.format(round(value, 1))}%`;
-  }
-
-  global.SKYBARCalculations = {
-    beverageCostPercent,
-    budgetVariance,
-    fixedCostPercent,
-    foodCostPercent,
-    formatMoney,
-    formatPercent,
-    gop,
-    normalizeEntry,
-    round,
-    safePercent,
-    summarize,
-    toNumber,
-    totalCost,
-    totalRevenue
-  };
+  global.SKYBARCalculations = { averageCheck, cashPosition, margin, money, number, pct, primeCost, variance };
 })(window);

@@ -1,45 +1,35 @@
 (function exposeFilters(global) {
-  const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-  function populateFilters(selectedDate = new Date()) {
-    const yearSelect = document.querySelector('#year-filter');
+  function uniquePeriods(periods) {
+    const months = [...new Set(periods.map((period) => period.month))].sort((a, b) => a - b);
+    const years = [...new Set(periods.map((period) => period.year))].sort((a, b) => b - a);
+    return { months, years };
+  }
+
+  function populateSelect(select, values, formatter) {
+    select.innerHTML = values.map((value) => `<option value="${value}">${formatter(value)}</option>`).join('');
+  }
+
+  function bindFilters(periods, savedView, onChange) {
     const monthSelect = document.querySelector('#month-filter');
-    yearSelect.innerHTML = '';
-    monthSelect.innerHTML = '';
+    const yearSelect = document.querySelector('#year-filter');
+    const { months, years } = uniquePeriods(periods);
+    populateSelect(monthSelect, months, (month) => monthNames[month - 1]);
+    populateSelect(yearSelect, years, (year) => year);
 
-    for (let year = 2025; year <= 2040; year += 1) {
-      yearSelect.add(new Option(String(year), String(year)));
+    const latest = periods.toSorted((a, b) => b.year - a.year || b.month - a.month)[0];
+    monthSelect.value = savedView.month || latest.month;
+    yearSelect.value = savedView.year || latest.year;
+
+    function selectedPeriod() {
+      return periods.find((period) => period.month === Number(monthSelect.value) && period.year === Number(yearSelect.value)) || latest;
     }
 
-    monthNames.forEach((month, index) => {
-      monthSelect.add(new Option(month, String(index + 1)));
-    });
-
-    yearSelect.value = String(selectedDate.getFullYear());
-    monthSelect.value = String(selectedDate.getMonth() + 1);
+    monthSelect.addEventListener('change', () => onChange(selectedPeriod()));
+    yearSelect.addEventListener('change', () => onChange(selectedPeriod()));
+    return selectedPeriod();
   }
 
-  function currentFilter() {
-    return {
-      year: Number(document.querySelector('#year-filter').value),
-      month: Number(document.querySelector('#month-filter').value)
-    };
-  }
-
-  function filterEntries(entries, filter = currentFilter()) {
-    return entries.filter((entry) => {
-      const [year, month] = entry.date.split('-').map(Number);
-      return year === filter.year && month === filter.month;
-    });
-  }
-
-  function bindFilterChanges(onChange) {
-    document.querySelector('#year-filter').addEventListener('change', onChange);
-    document.querySelector('#month-filter').addEventListener('change', onChange);
-  }
-
-  global.SKYBARFilters = { bindFilterChanges, currentFilter, filterEntries, monthNames, populateFilters };
+  global.SKYBARFilters = { bindFilters, monthNames };
 })(window);
