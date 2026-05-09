@@ -32,26 +32,32 @@ function calculatePeriodSummary(
 
 
   const totalFoodCost =
-    sumField(
-      entries,
-      "foodCost"
-    );
+
+  totalFoodRevenue *
+
+  (
+    settings.foodCostPercent / 100
+  );
 
 
 
-  const totalBeverageCost =
-    sumField(
-      entries,
-      "beverageCost"
-    );
+const totalBeverageCost =
+
+  totalBeverageRevenue *
+
+  (
+    settings.bevCostPercent / 100
+  );
 
 
 
-  const totalFixCost =
-    sumField(
-      entries,
-      "fixCost"
-    );
+const totalFixCost =
+
+  totalRevenue *
+
+  (
+    settings.fixedCostPercent / 100
+  );
 
 
 
