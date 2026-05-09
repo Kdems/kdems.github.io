@@ -8,6 +8,8 @@ function calculatePeriodSummary(
   let totalBeverageRevenue =
     0;
 
+
+
   let totalFoodCost =
     0;
 
@@ -36,6 +38,7 @@ function calculatePeriodSummary(
         );
 
 
+
       totalFoodCost +=
         Number(
           entry.foodCost || 0
@@ -60,11 +63,15 @@ function calculatePeriodSummary(
 
 
 
+
+
   const totalRevenue =
 
     totalFoodRevenue +
 
     totalBeverageRevenue;
+
+
 
 
 
@@ -78,11 +85,15 @@ function calculatePeriodSummary(
 
 
 
+
+
   const totalGop =
 
     totalRevenue -
 
     totalCost;
+
+
 
 
 
@@ -101,11 +112,94 @@ function calculatePeriodSummary(
 
 
 
+
+
+  const foodMix =
+
+    totalRevenue > 0
+
+      ? (
+          totalFoodRevenue /
+          totalRevenue
+        ) * 100
+
+      : 0;
+
+
+
+
+
+  const beverageMix =
+
+    totalRevenue > 0
+
+      ? (
+          totalBeverageRevenue /
+          totalRevenue
+        ) * 100
+
+      : 0;
+
+
+
+
+
+
+
+  const foodCostPercent =
+
+    totalFoodRevenue > 0
+
+      ? (
+          totalFoodCost /
+          totalFoodRevenue
+        ) * 100
+
+      : 0;
+
+
+
+
+
+  const beverageCostPercent =
+
+    totalBeverageRevenue > 0
+
+      ? (
+          totalBeverageCost /
+          totalBeverageRevenue
+        ) * 100
+
+      : 0;
+
+
+
+
+
+  const fixCostPercent =
+
+    totalRevenue > 0
+
+      ? (
+          totalFixCost /
+          totalRevenue
+        ) * 100
+
+      : 0;
+
+
+
+
+
+
+
   return {
 
     totalFoodRevenue,
 
     totalBeverageRevenue,
+
+
 
     totalRevenue,
 
@@ -124,9 +218,27 @@ function calculatePeriodSummary(
 
     totalCost,
 
+
+
     totalGop,
 
-    gopMargin
+
+
+    gopMargin,
+
+
+
+    foodMix,
+
+    beverageMix,
+
+
+
+    foodCostPercent,
+
+    beverageCostPercent,
+
+    fixCostPercent
 
   };
 
