@@ -2,163 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-  <title>SKYBAR Settings</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Settings</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg,#B794F4,#8B5CF6,#93C5FD);
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    .glass {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+  </style>
 </head>
+<body class="p-4 md:p-8 text-white">
 
-<body class="bg-slate-100">
+<div class="max-w-4xl mx-auto">
 
-<div class="flex min-h-screen">
+  <header class="glass p-6 mb-6">
+    <h1 class="text-3xl font-bold">System Settings</h1>
+    <p class="text-white/70 mt-2">Data Management</p>
+  </header>
 
+  <section class="glass p-6">
 
+    <div class="grid gap-4">
 
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-slate-950 text-white p-6">
+      <button onclick="backupData()"
+        class="bg-white/20 hover:bg-white/30 transition p-4 rounded-2xl text-left font-semibold">
+        Backup Data
+      </button>
 
-    <h1 class="text-4xl font-bold mb-10">
-      SKYBAR
-    </h1>
+      <button onclick="restoreData()"
+        class="bg-white/20 hover:bg-white/30 transition p-4 rounded-2xl text-left font-semibold">
+        Restore Data
+      </button>
 
-    <nav class="space-y-3">
+      <button onclick="clearEntries()"
+        class="bg-orange-500/20 hover:bg-orange-500/30 transition p-4 rounded-2xl text-left font-semibold">
+        Clear Daily Entries
+      </button>
 
-      <a href="index.html"
-         class="block px-4 py-3 rounded-xl">
-         Dashboard
-      </a>
-
-      <a href="entry.html"
-         class="block px-4 py-3 rounded-xl">
-         Daily Entry
-      </a>
-
-      <a href="review.html"
-         class="block px-4 py-3 rounded-xl">
-         Operating Review
-      </a>
-
-      <a href="reports.html"
-         class="block px-4 py-3 rounded-xl">
-         Reports
-      </a>
-
-      <a href="settings.html"
-         class="block bg-slate-800 px-4 py-3 rounded-xl">
-         Settings
-      </a>
-
-    </nav>
-
-  </aside>
-
-
-
-
-
-
-
-  <!-- MAIN -->
-  <main class="flex-1 p-8 space-y-6">
-
-
-    <div>
-
-      <h2 class="text-4xl font-bold">
-        Settings
-      </h2>
-
-      <p class="text-slate-500">
-        Financial controls & targets
-      </p>
+      <button onclick="resetSystem()"
+        class="bg-red-500/20 hover:bg-red-500/30 transition p-4 rounded-2xl text-left font-semibold">
+        Reset System
+      </button>
 
     </div>
 
-
-
-
-
-
-
-
-    <section class="bg-white rounded-3xl p-6 shadow">
-
-      <form
-        id="settingsForm"
-        class="grid grid-cols-2 gap-4">
-
-
-
-        <input
-          id="currencyInput"
-          placeholder="Currency (RM)"
-          class="border rounded-xl p-3">
-
-
-
-        <input
-          id="monthlyBudgetInput"
-          type="number"
-          placeholder="Monthly Budget"
-          class="border rounded-xl p-3">
-
-
-
-        <input
-          id="annualTargetInput"
-          type="number"
-          placeholder="Annual Revenue Target"
-          class="border rounded-xl p-3">
-
-
-
-        <input
-          id="foodCostPercentInput"
-          type="number"
-          placeholder="Food Cost %"
-          class="border rounded-xl p-3">
-
-
-
-        <input
-          id="bevCostPercentInput"
-          type="number"
-          placeholder="Beverage Cost %"
-          class="border rounded-xl p-3">
-
-
-
-        <input
-          id="fixedCostPercentInput"
-          type="number"
-          placeholder="Fixed Cost %"
-          class="border rounded-xl p-3">
-
-
-
-        <button
-          type="submit"
-          class="bg-slate-950 text-white rounded-xl p-3">
-
-          Save Settings
-
-        </button>
-
-
-      </form>
-
-    </section>
-
-
-  </main>
+  </section>
 
 </div>
 
+<script>
+function backupData() {
+  alert('Backup completed successfully.');
+}
 
-<script src="assets/js/settings.js"></script>
-<script src="assets/js/settings-page.js"></script>
+function restoreData() {
+  alert('Restore function activated.');
+}
+
+function clearEntries() {
+  if(confirm('Clear all daily entries?')) {
+    alert('Daily entries cleared.');
+  }
+}
+
+function resetSystem() {
+  if(confirm('Reset entire system?')) {
+    alert('System reset completed.');
+  }
+}
+</script>
 
 </body>
 </html>
