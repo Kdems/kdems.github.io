@@ -574,3 +574,67 @@ function formatDate(
   );
 
 }
+
+
+
+
+
+function paintKpiColor(
+  id,
+  achievement
+) {
+
+  const el =
+    document.getElementById(
+      id
+    );
+
+
+
+  if (
+    !el
+  ) return;
+
+
+
+  el.classList.remove(
+
+    "text-green-600",
+
+    "text-orange-500",
+
+    "text-red-600"
+
+  );
+
+
+
+  if (
+    achievement >= 100
+  ) {
+
+    el.classList.add(
+      "text-green-600"
+    );
+
+  }
+
+  else if (
+    achievement >= 80
+  ) {
+
+    el.classList.add(
+      "text-orange-500"
+    );
+
+  }
+
+  else {
+
+    el.classList.add(
+      "text-red-600"
+    );
+
+  }
+
+}
