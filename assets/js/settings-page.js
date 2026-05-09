@@ -21,42 +21,49 @@ function initSettingsPage() {
 
 function loadSettings() {
 
-  const settings =
+  const s =
     getSettings();
 
 
 
   setValue(
     "currencyInput",
-    settings.currency
+    s.currency
   );
 
 
 
   setValue(
     "monthlyBudgetInput",
-    settings.monthlyBudget
+    s.monthlyBudget
   );
 
 
 
   setValue(
     "annualTargetInput",
-    settings.annualRevenueTarget
+    s.annualRevenueTarget
   );
 
 
 
   setValue(
-    "lyFoodRevenueInput",
-    settings.lyFoodRevenue
+    "foodCostPercentInput",
+    s.foodCostPercent
   );
 
 
 
   setValue(
-    "lyBeverageRevenueInput",
-    settings.lyBeverageRevenue
+    "bevCostPercentInput",
+    s.bevCostPercent
+  );
+
+
+
+  setValue(
+    "fixedCostPercentInput",
+    s.fixedCostPercent
   );
 
 }
@@ -71,11 +78,6 @@ function bindSettingsForm() {
     document.getElementById(
       "settingsForm"
     );
-
-
-  if (
-    !form
-  ) return;
 
 
 
@@ -117,19 +119,28 @@ function bindSettingsForm() {
 
 
 
-        lyFoodRevenue:
+        foodCostPercent:
           Number(
             getValue(
-              "lyFoodRevenueInput"
+              "foodCostPercentInput"
             )
           ),
 
 
 
-        lyBeverageRevenue:
+        bevCostPercent:
           Number(
             getValue(
-              "lyBeverageRevenueInput"
+              "bevCostPercentInput"
+            )
+          ),
+
+
+
+        fixedCostPercent:
+          Number(
+            getValue(
+              "fixedCostPercentInput"
             )
           )
 
