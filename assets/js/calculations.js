@@ -1,33 +1,133 @@
-(function exposeCalculations(global) {
-  const money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-  const number = new Intl.NumberFormat('en-US');
+function calculatePeriodSummary(
+  entries
+) {
 
-  function pct(value, total) {
-    if (!total) return 0;
-    return (value / total) * 100;
-  }
+  let totalFoodRevenue =
+    0;
 
-  function margin(period) {
-    const profit = period.netSales - period.foodCost - period.beverageCost - period.laborCost - period.operatingExpenses;
-    return { profit, rate: pct(profit, period.netSales) };
-  }
+  let totalBeverageRevenue =
+    0;
 
-  function primeCost(period) {
-    const total = period.foodCost + period.beverageCost + period.laborCost;
-    return { total, rate: pct(total, period.netSales) };
-  }
+  let totalFoodCost =
+    0;
 
-  function averageCheck(period) {
-    return period.covers ? period.netSales / period.covers : 0;
-  }
+  let totalBeverageCost =
+    0;
 
-  function cashPosition(period) {
-    return period.bankDeposits - period.openPayables;
-  }
+  let totalFixCost =
+    0;
 
-  function variance(actual, target) {
-    return actual - target;
-  }
 
-  global.SKYBARCalculations = { averageCheck, cashPosition, margin, money, number, pct, primeCost, variance };
-})(window);
+
+
+
+  entries.forEach(
+    entry => {
+
+      totalFoodRevenue +=
+        Number(
+          entry.foodRevenue || 0
+        );
+
+
+      totalBeverageRevenue +=
+        Number(
+          entry.beverageRevenue || 0
+        );
+
+
+      totalFoodCost +=
+        Number(
+          entry.foodCost || 0
+        );
+
+
+      totalBeverageCost +=
+        Number(
+          entry.beverageCost || 0
+        );
+
+
+      totalFixCost +=
+        Number(
+          entry.fixCost || 0
+        );
+
+    }
+  );
+
+
+
+
+
+  const totalRevenue =
+
+    totalFoodRevenue +
+
+    totalBeverageRevenue;
+
+
+
+  const totalCost =
+
+    totalFoodCost +
+
+    totalBeverageCost +
+
+    totalFixCost;
+
+
+
+  const totalGop =
+
+    totalRevenue -
+
+    totalCost;
+
+
+
+  const gopMargin =
+
+    totalRevenue > 0
+
+      ? (
+          totalGop /
+          totalRevenue
+        ) * 100
+
+      : 0;
+
+
+
+
+
+  return {
+
+    totalFoodRevenue,
+
+    totalBeverageRevenue,
+
+    totalRevenue,
+
+
+
+    foodCost:
+      totalFoodCost,
+
+    beverageCost:
+      totalBeverageCost,
+
+    fixCost:
+      totalFixCost,
+
+
+
+    totalCost,
+
+    totalGop,
+
+    gopMargin
+
+  };
+
+}
