@@ -13,16 +13,50 @@ function getSettings() {
     );
 
 
-  if (!raw) {
 
-    return getDefaultSettings();
+  const saved =
 
-  }
-
-
-  return JSON.parse(
     raw
-  );
+
+      ? JSON.parse(
+          raw
+        )
+
+      : {};
+
+
+
+  return {
+
+    currency:
+      saved.currency || "RM",
+
+
+
+    monthlyBudget:
+      saved.monthlyBudget || 575649,
+
+
+
+    annualRevenueTarget:
+      saved.annualRevenueTarget || 7500000,
+
+
+
+    foodCostPercent:
+      saved.foodCostPercent || 31,
+
+
+
+    bevCostPercent:
+      saved.bevCostPercent || 28,
+
+
+
+    fixedCostPercent:
+      saved.fixedCostPercent || 18
+
+  };
 
 }
 
@@ -34,45 +68,29 @@ function saveSettings(
   payload
 ) {
 
+  const current =
+    getSettings();
+
+
+
+  const updated = {
+
+    ...current,
+
+    ...payload
+
+  };
+
+
+
   localStorage.setItem(
 
     SETTINGS_KEY,
 
     JSON.stringify(
-      payload
+      updated
     )
 
   );
-
-}
-
-
-
-
-
-function getDefaultSettings() {
-
-  return {
-
-    currency:
-      "RM",
-
-
-    monthlyBudget:
-      120000,
-
-
-    annualRevenueTarget:
-      1440000,
-
-
-    lyFoodRevenue:
-      45000,
-
-
-    lyBeverageRevenue:
-      30000
-
-  };
 
 }
