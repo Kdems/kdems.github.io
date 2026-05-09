@@ -1,13 +1,3 @@
-let selectedYear =
-  new Date().getFullYear();
-
-let selectedMonth =
-  new Date().getMonth() + 1;
-
-
-
-
-
 document.addEventListener(
   "DOMContentLoaded",
   initDashboard
@@ -19,9 +9,11 @@ document.addEventListener(
 
 function initDashboard() {
 
+  seedSampleData();
+
   setupFilters();
 
-  renderDashboard();
+  refreshDashboard();
 
 }
 
@@ -29,19 +21,19 @@ function initDashboard() {
 
 
 
-// ====================
+// ======================
 // FILTERS
-// ====================
+// ======================
 
 function setupFilters() {
 
-  const yearFilter =
+  const yearSelect =
     document.getElementById(
       "yearFilter"
     );
 
 
-  const monthFilter =
+  const monthSelect =
     document.getElementById(
       "monthFilter"
     );
@@ -49,108 +41,74 @@ function setupFilters() {
 
 
   if (
-    yearFilter
+    !yearSelect ||
+    !monthSelect
+  ) return;
+
+
+
+  yearSelect.innerHTML =
+    "";
+
+
+
+  for (
+    let year = 2025;
+    year <= 2040;
+    year++
   ) {
 
-    yearFilter.innerHTML =
-      "";
+    yearSelect.innerHTML += `
 
+      <option value="${year}">
+        ${year}
+      </option>
 
-
-    for (
-      let year = 2025;
-      year <= 2040;
-      year++
-    ) {
-
-      yearFilter.innerHTML += `
-
-        <option
-          value="${year}">
-
-          ${year}
-
-        </option>
-
-      `;
-
-    }
-
-
-
-    yearFilter.value =
-      selectedYear;
-
-
-
-    yearFilter.onchange =
-      function() {
-
-        selectedYear =
-          Number(
-            this.value
-          );
-
-
-        renderDashboard();
-
-      };
+    `;
 
   }
 
 
 
-
-
-  if (
-    monthFilter
+  for (
+    let month = 1;
+    month <= 12;
+    month++
   ) {
 
-    monthFilter.innerHTML =
-      "";
+    monthSelect.innerHTML += `
 
+      <option value="${month}">
+        ${month}
+      </option>
 
-
-    for (
-      let month = 1;
-      month <= 12;
-      month++
-    ) {
-
-      monthFilter.innerHTML += `
-
-        <option
-          value="${month}">
-
-          ${month}
-
-        </option>
-
-      `;
-
-    }
-
-
-
-    monthFilter.value =
-      selectedMonth;
-
-
-
-    monthFilter.onchange =
-      function() {
-
-        selectedMonth =
-          Number(
-            this.value
-          );
-
-
-        renderDashboard();
-
-      };
+    `;
 
   }
+
+
+
+  const today =
+    new Date();
+
+
+
+  yearSelect.value =
+    today.getFullYear();
+
+
+
+  monthSelect.value =
+    today.getMonth() + 1;
+
+
+
+  yearSelect.onchange =
+    refreshDashboard;
+
+
+  monthSelect.onchange =
+    refreshDashboard;
 
 }
 
@@ -158,17 +116,14 @@ function setupFilters() {
 
 
 
-// ====================
-// MAIN
-// ====================
+// ======================
+// DASHBOARD
+// ======================
 
-function renderDashboard() {
+function refreshDashboard() {
 
   const entries =
-    filterEntries(
-      selectedYear,
-      selectedMonth
-    );
+    getAllEntries();
 
 
 
@@ -179,20 +134,13 @@ function renderDashboard() {
 
 
 
-  renderExecutiveAlerts(
-    summary,
-    entries
-  );
-
-
   renderYtd(
     summary
   );
 
 
   renderMtd(
-    summary,
-    entries
+    summary
   );
 
 
@@ -201,12 +149,12 @@ function renderDashboard() {
   );
 
 
-  renderFoodAndBeverage(
+  renderFoodBeverage(
     summary
   );
 
 
-  renderMonthlySummary(
+  renderSummary(
     summary,
     entries
   );
@@ -219,9 +167,8 @@ function renderDashboard() {
 
 
   if (
-    entries.length &&
     typeof renderCharts ===
-      "function"
+    "function"
   ) {
 
     renderCharts(
@@ -236,118 +183,16 @@ function renderDashboard() {
 
 
 
-// ====================
-// ALERTS
-// ====================
-
-function renderExecutiveAlerts(
-  summary,
-  entries
-) {
-
-  const settings =
-    getSettings();
-
-
-
-  const revenueAchievement =
-    percentage(
-
-      summary.totalRevenue,
-
-      settings.monthlyBudget
-
-    );
-
-
-
-  setText(
-
-    "revenueAlertCard",
-
-    revenueAchievement >= 100
-
-      ? "🟢 ON TRACK"
-
-      : "🔴 BELOW"
-
-  );
-
-
-
-  setText(
-
-    "projectionAlertCard",
-
-    entries.length
-
-      ? "🟢 LIVE"
-
-      : "⚪ NO DATA"
-
-  );
-
-
-
-  setText(
-
-    "foodAlertCard",
-
-    summary.foodCostPercent <= 35
-
-      ? "🟢 GOOD"
-
-      : "🔴 HIGH"
-
-  );
-
-
-
-  setText(
-
-    "marginAlertCard",
-
-    summary.gopMargin >= 40
-
-      ? "🟢 STRONG"
-
-      : "🔴 LOW"
-
-  );
-
-}
-
-
-
-
-
-// ====================
+// ======================
 // YTD
-// ====================
+// ======================
 
 function renderYtd(
   summary
 ) {
 
-  const settings =
-    getSettings();
-
-
-
-  const achievement =
-    percentage(
-
-      summary.totalRevenue,
-
-      settings.annualRevenueTarget
-
-    );
-
-
-
   setText(
     "ytdRevenueCard",
-
     money(
       summary.totalRevenue
     )
@@ -357,9 +202,9 @@ function renderYtd(
 
   setText(
     "ytdBudgetCard",
-
     money(
-      settings.annualRevenueTarget
+      getSettings()
+        .annualRevenueTarget
     )
   );
 
@@ -367,9 +212,8 @@ function renderYtd(
 
   setText(
     "ytdAchievementCard",
-
     percent(
-      achievement
+      summary.ytdAchievement
     )
   );
 
@@ -377,13 +221,17 @@ function renderYtd(
 
   setText(
     "ytdVarianceCard",
-
     money(
+      summary.ytdVariance
+    )
+  );
 
-      summary.totalRevenue -
 
-      settings.annualRevenueTarget
 
+  setText(
+    "ytdRemainingCard",
+    money(
+      summary.ytdRemaining
     )
   );
 
@@ -393,53 +241,16 @@ function renderYtd(
 
 
 
-// ====================
+// ======================
 // MTD
-// ====================
+// ======================
 
 function renderMtd(
-  summary,
-  entries
+  summary
 ) {
-
-  const settings =
-    getSettings();
-
-
-
-  const daysPassed =
-    entries.length || 1;
-
-
-
-  const avg =
-    summary.totalRevenue /
-    daysPassed;
-
-
-
-  const daysInMonth =
-    new Date(
-
-      selectedYear,
-
-      selectedMonth,
-
-      0
-
-    ).getDate();
-
-
-
-  const projection =
-    avg *
-    daysInMonth;
-
-
 
   setText(
     "mtdRevenueCard",
-
     money(
       summary.totalRevenue
     )
@@ -449,9 +260,8 @@ function renderMtd(
 
   setText(
     "dailyPaceCard",
-
     money(
-      avg
+      summary.dailyPace
     )
   );
 
@@ -459,9 +269,8 @@ function renderMtd(
 
   setText(
     "projectionCard",
-
     money(
-      projection
+      summary.projectedRevenue
     )
   );
 
@@ -469,13 +278,8 @@ function renderMtd(
 
   setText(
     "projectionGapCard",
-
     money(
-
-      projection -
-
-      settings.monthlyBudget
-
+      summary.projectionGap
     )
   );
 
@@ -483,9 +287,7 @@ function renderMtd(
 
   setText(
     "daysLeftCard",
-
-    daysInMonth -
-      daysPassed
+    summary.daysLeft
   );
 
 }
@@ -494,9 +296,9 @@ function renderMtd(
 
 
 
-// ====================
+// ======================
 // GOP
-// ====================
+// ======================
 
 function renderGop(
   summary
@@ -504,7 +306,6 @@ function renderGop(
 
   setText(
     "gopRevenueCard",
-
     money(
       summary.totalRevenue
     )
@@ -514,7 +315,6 @@ function renderGop(
 
   setText(
     "gopCostCard",
-
     money(
       summary.totalCost
     )
@@ -524,7 +324,6 @@ function renderGop(
 
   setText(
     "gopMainCard",
-
     money(
       summary.totalGop
     )
@@ -534,7 +333,6 @@ function renderGop(
 
   setText(
     "gopMarginCard",
-
     percent(
       summary.gopMargin
     )
@@ -546,29 +344,18 @@ function renderGop(
 
 
 
-// ====================
+// ======================
 // F&B
-// ====================
+// ======================
 
-function renderFoodAndBeverage(
+function renderFoodBeverage(
   summary
 ) {
 
   setText(
     "foodRevenueCard",
-
     money(
-      summary.totalFoodRevenue
-    )
-  );
-
-
-
-  setText(
-    "bevRevenueCard",
-
-    money(
-      summary.totalBeverageRevenue
+      summary.foodRevenue
     )
   );
 
@@ -576,7 +363,6 @@ function renderFoodAndBeverage(
 
   setText(
     "foodMixCard",
-
     percent(
       summary.foodMix
     )
@@ -585,8 +371,16 @@ function renderFoodAndBeverage(
 
 
   setText(
-    "bevMixCard",
+    "bevRevenueCard",
+    money(
+      summary.beverageRevenue
+    )
+  );
 
+
+
+  setText(
+    "bevMixCard",
     percent(
       summary.beverageMix
     )
@@ -598,18 +392,17 @@ function renderFoodAndBeverage(
 
 
 
-// ====================
+// ======================
 // SUMMARY
-// ====================
+// ======================
 
-function renderMonthlySummary(
+function renderSummary(
   summary,
   entries
 ) {
 
   setText(
     "summaryRevenueCard",
-
     money(
       summary.totalRevenue
     )
@@ -619,7 +412,6 @@ function renderMonthlySummary(
 
   setText(
     "summaryBudgetCard",
-
     money(
       getSettings()
         .monthlyBudget
@@ -634,6 +426,7 @@ function renderMonthlySummary(
     );
 
 
+
   const worst =
     getWorstEntry(
       entries
@@ -645,11 +438,9 @@ function renderMonthlySummary(
     "bestDayCard",
 
     best
-
       ? formatDate(
           best.date
         )
-
       : "-"
   );
 
@@ -659,11 +450,9 @@ function renderMonthlySummary(
     "worstDayCard",
 
     worst
-
       ? formatDate(
           worst.date
         )
-
       : "-"
   );
 
@@ -673,9 +462,9 @@ function renderMonthlySummary(
 
 
 
-// ====================
+// ======================
 // RECENT
-// ====================
+// ======================
 
 function renderRecentEntries(
   entries
@@ -693,63 +482,45 @@ function renderRecentEntries(
 
 
 
-  if (
-    !entries.length
-  ) {
-
-    container.innerHTML =
-      `
-      <div class="text-slate-400">
-        No entries
-      </div>
-      `;
-
-    return;
-
-  }
-
-
-
   container.innerHTML =
+
     entries
       .slice()
       .reverse()
+      .slice(
+        0,
+        8
+      )
       .map(
-        entry => {
+        item => {
 
           const total =
 
             Number(
-              entry.foodRevenue || 0
+              item.foodRevenue || 0
             ) +
 
             Number(
-              entry.beverageRevenue || 0
+              item.beverageRevenue || 0
             );
 
 
 
           return `
 
-            <div class="grid grid-cols-2 border-b py-3">
+            <div class="flex justify-between border-b py-3">
 
-              <div>
-
+              <span>
                 ${formatDate(
-                  entry.date
+                  item.date
                 )}
+              </span>
 
-              </div>
-
-
-
-              <div class="text-right font-bold">
-
+              <span class="font-bold">
                 ${money(
                   total
                 )}
-
-              </div>
+              </span>
 
             </div>
 
@@ -765,125 +536,9 @@ function renderRecentEntries(
 
 
 
-// ====================
+// ======================
 // HELPERS
-// ====================
-
-function getBestEntry(
-  entries
-) {
-
-  if (
-    !entries.length
-  ) return null;
-
-
-
-  return entries.reduce(
-    (
-      best,
-      current
-    ) => {
-
-      const bestValue =
-
-        Number(
-          best.foodRevenue || 0
-        ) +
-
-        Number(
-          best.beverageRevenue || 0
-        );
-
-
-
-      const currentValue =
-
-        Number(
-          current.foodRevenue || 0
-        ) +
-
-        Number(
-          current.beverageRevenue || 0
-        );
-
-
-
-      return
-
-        currentValue >
-        bestValue
-
-          ? current
-
-          : best;
-
-    }
-  );
-
-}
-
-
-
-
-
-function getWorstEntry(
-  entries
-) {
-
-  if (
-    !entries.length
-  ) return null;
-
-
-
-  return entries.reduce(
-    (
-      worst,
-      current
-    ) => {
-
-      const worstValue =
-
-        Number(
-          worst.foodRevenue || 0
-        ) +
-
-        Number(
-          worst.beverageRevenue || 0
-        );
-
-
-
-      const currentValue =
-
-        Number(
-          current.foodRevenue || 0
-        ) +
-
-        Number(
-          current.beverageRevenue || 0
-        );
-
-
-
-      return
-
-        currentValue <
-        worstValue
-
-          ? current
-
-          : worst;
-
-    }
-  );
-
-}
-
-
-
-
+// ======================
 
 function setText(
   id,
@@ -911,21 +566,20 @@ function setText(
 
 
 
-function percentage(
-  actual,
-  target
+function money(
+  value
 ) {
 
-  if (
-    !target
-  ) return 0;
-
-
-
   return (
-    actual /
-    target
-  ) * 100;
+
+    getSettings()
+      .currency +
+
+    Number(
+      value || 0
+    ).toLocaleString()
+
+  );
 
 }
 
@@ -941,36 +595,9 @@ function percent(
 
     Number(
       value || 0
-    ).toFixed(1)
-
-    + "%"
-
-  );
-
-}
-
-
-
-
-
-function money(
-  value
-) {
-
-  return (
-
-    getSettings()
-      .currency +
-
-    Number(
-      value || 0
-    ).toLocaleString(
-      undefined,
-      {
-        maximumFractionDigits:
-          0
-      }
-    )
+    ).toFixed(
+      1
+    ) + "%"
 
   );
 
