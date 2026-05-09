@@ -1,190 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
-
-  <title>
-    SKYBAR Reports
-  </title>
-
-  <link rel="icon" href="data:,">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finance Reports</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg,#B794F4,#8B5CF6,#93C5FD);
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    .glass {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+  </style>
 </head>
+<body class="p-4 md:p-8 text-white">
 
+<div class="max-w-7xl mx-auto">
 
+  <header class="glass p-6 mb-6">
+    <h1 class="text-3xl font-bold">Finance Reports</h1>
+    <p class="text-white/70 mt-2">YTD • MTD • GOP • F&B Analysis</p>
+  </header>
 
-<body class="bg-slate-100 font-sans">
+  <!-- KPI -->
+  <section class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="glass p-5"><p>YTD Revenue</p><h2 class="text-2xl font-bold mt-2">2,676,573</h2></div>
+    <div class="glass p-5"><p>YTD Budget</p><h2 class="text-2xl font-bold mt-2">2,748,696</h2></div>
+    <div class="glass p-5"><p>Achievement</p><h2 class="text-2xl font-bold text-green-300 mt-2">97.4%</h2></div>
+    <div class="glass p-5"><p>GOP</p><h2 class="text-2xl font-bold text-green-300 mt-2">67,291</h2></div>
+  </section>
 
-<div class="flex min-h-screen">
-
-
-
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-slate-950 text-white p-6">
-
-    <h1 class="text-4xl font-bold mb-10">
-      SKYBAR
-    </h1>
-
-
-
-    <nav class="space-y-3">
-
-      <a
-        href="index.html"
-        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
-        Dashboard
-      </a>
-
-      <a
-        href="entry.html"
-        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
-        Daily Entry
-      </a>
-
-      <a
-        href="review.html"
-        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
-        Operating Review
-      </a>
-
-      <a
-        href="reports.html"
-        class="block bg-slate-800 rounded-xl px-4 py-3">
-        Reports
-      </a>
-
-      <a
-        href="settings.html"
-        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
-        Settings
-      </a>
-
-    </nav>
-
-  </aside>
-
-
-
-
-
-
-
-
-  <!-- MAIN -->
-  <main class="flex-1 p-8 space-y-6">
-
-
-    <div>
-
-      <h2 class="text-4xl font-bold">
-        Reports
-      </h2>
-
-      <p class="text-slate-500">
-        Management reporting and export
-      </p>
-
+  <!-- Charts -->
+  <section class="grid lg:grid-cols-2 gap-6 mb-6">
+    <div class="glass p-6">
+      <h2 class="text-xl font-semibold mb-4">Revenue Trend</h2>
+      <canvas id="revenueChart"></canvas>
     </div>
 
+    <div class="glass p-6">
+      <h2 class="text-xl font-semibold mb-4">Food vs Beverage</h2>
+      <canvas id="mixChart"></canvas>
+    </div>
+  </section>
 
+  <!-- Table -->
+  <section class="glass p-6">
+    <h2 class="text-xl font-semibold mb-4">Monthly Summary</h2>
 
-
-
-
-
-
-    <!-- KPI -->
-    <section class="bg-sky-200 rounded-3xl p-6 shadow">
-
-      <h3 class="font-bold text-xl mb-4">
-        Performance Report
-      </h3>
-
-
-      <div class="grid grid-cols-3 gap-4">
-
-        <div class="bg-white/70 rounded-2xl p-4">
-          <small>Revenue</small>
-          <h4 id="reportRevenueCard"></h4>
-        </div>
-
-        <div class="bg-white/70 rounded-2xl p-4">
-          <small>Total Cost</small>
-          <h4 id="reportCostCard"></h4>
-        </div>
-
-        <div class="bg-white/70 rounded-2xl p-4">
-          <small>GOP</small>
-          <h4 id="reportGopCard"></h4>
-        </div>
-
-      </div>
-
-
-
-      <div class="grid grid-cols-3 gap-4 mt-4">
-
-        <div class="bg-white/70 rounded-2xl p-4">
-          <small>Margin</small>
-          <h4 id="reportMarginCard"></h4>
-        </div>
-
-        <div class="bg-white/70 rounded-2xl p-4">
-          <small>Best Day</small>
-          <h4 id="reportBestDayCard"></h4>
-        </div>
-
-        <div class="bg-white/70 rounded-2xl p-4">
-          <small>Worst Day</small>
-          <h4 id="reportWorstDayCard"></h4>
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-
-
-
-
-
-    <!-- EXPORT -->
-    <section class="bg-white rounded-3xl p-6 shadow">
-
-      <button
-        id="exportCsvBtn"
-        class="bg-slate-900 text-white rounded-xl px-6 py-3">
-
-        Export CSV
-
-      </button>
-
-    </section>
-
-
-  </main>
+    <div class="overflow-auto">
+      <table class="w-full text-left">
+        <thead>
+          <tr>
+            <th class="py-2">Date</th>
+            <th>Revenue</th>
+            <th>Budget</th>
+            <th>Achievement</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>04-05-2026</td>
+            <td>26,209</td>
+            <td>18,000</td>
+            <td>145.6%</td>
+            <td class="text-green-300">Good</td>
+          </tr>
+          <tr>
+            <td>08-05-2026</td>
+            <td>18,179</td>
+            <td>22,000</td>
+            <td>82.6%</td>
+            <td class="text-red-300">Poor</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
 </div>
 
+<script>
+new Chart(document.getElementById('revenueChart'), {
+  type: 'line',
+  data: {
+    labels: ['Week 1','Week 2','Week 3','Week 4'],
+    datasets: [{
+      data: [420000,580000,730000,946573],
+      borderColor: 'white',
+      tension: 0.4
+    }]
+  }
+});
 
-
-
-
-<script src="assets/js/storage.js"></script>
-<script src="assets/js/settings.js"></script>
-<script src="assets/js/calculations.js"></script>
-<script src="assets/js/reports.js"></script>
+new Chart(document.getElementById('mixChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Food','Beverage'],
+    datasets: [{
+      data: [29.2,70.8],
+      backgroundColor: ['rgba(255,255,255,0.85)','rgba(255,255,255,0.3)']
+    }]
+  }
+});
+</script>
 
 </body>
 </html>
