@@ -4,9 +4,6 @@ const ENTRY_STORAGE_KEY =
 
 
 
-// ======================
-// GET ALL
-// ======================
 
 function getAllEntries() {
 
@@ -43,6 +40,7 @@ function getAllEntries() {
   ) {
 
     console.error(
+      "Storage error:",
       error
     );
 
@@ -56,20 +54,18 @@ function getAllEntries() {
 
 
 
-// ======================
-// SAVE ALL
-// ======================
-
 function saveAllEntries(
   entries
 ) {
 
   localStorage.setItem(
+
     ENTRY_STORAGE_KEY,
 
     JSON.stringify(
       entries
     )
+
   );
 
 }
@@ -77,10 +73,6 @@ function saveAllEntries(
 
 
 
-
-// ======================
-// ADD ENTRY
-// ======================
 
 function addEntry(
   payload
@@ -90,7 +82,7 @@ function addEntry(
     getAllEntries();
 
 
-  const entry = {
+  const newEntry = {
 
     id:
       Date.now(),
@@ -98,6 +90,7 @@ function addEntry(
 
     date:
       payload.date || "",
+
 
 
     foodRevenue:
@@ -110,6 +103,7 @@ function addEntry(
       Number(
         payload.beverageRevenue || 0
       ),
+
 
 
     foodCost:
@@ -130,6 +124,7 @@ function addEntry(
       ),
 
 
+
     budget:
       Number(
         payload.budget || 0
@@ -139,7 +134,7 @@ function addEntry(
 
 
   entries.push(
-    entry
+    newEntry
   );
 
 
@@ -148,17 +143,13 @@ function addEntry(
   );
 
 
-  return entry;
+  return newEntry;
 
 }
 
 
 
 
-
-// ======================
-// UPDATE
-// ======================
 
 function updateEntry(
   entryId,
@@ -243,10 +234,6 @@ function updateEntry(
 
 
 
-// ======================
-// DELETE
-// ======================
-
 function deleteEntry(
   entryId
 ) {
@@ -274,9 +261,17 @@ function deleteEntry(
 
 
 
-// ======================
-// FILTER
-// ======================
+function clearAllEntries() {
+
+  localStorage.removeItem(
+    ENTRY_STORAGE_KEY
+  );
+
+}
+
+
+
+
 
 function filterEntries(
   year,
@@ -321,21 +316,5 @@ function filterEntries(
           b.date
         )
     );
-
-}
-
-
-
-
-
-// ======================
-// CLEAR
-// ======================
-
-function clearAllEntries() {
-
-  localStorage.removeItem(
-    ENTRY_STORAGE_KEY
-  );
 
 }
