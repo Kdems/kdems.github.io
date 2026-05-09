@@ -1,186 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
-
-  <title>
-    SKYBAR Operating Review
-  </title>
-
-  <link rel="icon" href="data:,">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Performance Review</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
+  <style>
+    body {
+      background: linear-gradient(135deg,#B794F4,#8B5CF6,#93C5FD);
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    .glass {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+  </style>
 </head>
+<body class="p-4 md:p-8 text-white">
 
+<div class="max-w-7xl mx-auto">
 
+  <header class="glass p-6 mb-6">
+    <h1 class="text-3xl font-bold">Performance Review</h1>
+    <p class="text-white/70 mt-2">Business Health & Management Review</p>
+  </header>
 
-<body class="bg-slate-100 font-sans">
+  <!-- Scorecards -->
+  <section class="grid md:grid-cols-3 gap-4 mb-6">
 
-<div class="flex min-h-screen">
-
-
-
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-slate-950 text-white p-6">
-
-    <h1 class="text-4xl font-bold mb-10">
-      SKYBAR
-    </h1>
-
-
-
-    <nav class="space-y-3">
-
-      <a
-        href="index.html"
-        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
-        Dashboard
-      </a>
-
-      <a
-        href="entry.html"
-        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
-        Daily Entry
-      </a>
-
-      <a
-        href="review.html"
-        class="block bg-slate-800 rounded-xl px-4 py-3">
-        Operating Review
-      </a>
-
-      <a
-        href="reports.html"
-        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
-        Reports
-      </a>
-
-      <a
-        href="settings.html"
-        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
-        Settings
-      </a>
-
-    </nav>
-
-  </aside>
-
-
-
-
-
-
-
-  <!-- MAIN -->
-  <main class="flex-1 p-8 space-y-6">
-
-
-    <div>
-
-      <h2 class="text-4xl font-bold">
-        Operating Review
-      </h2>
-
-      <p class="text-slate-500">
-        Daily profitability and operational insights
-      </p>
-
+    <div class="glass p-5">
+      <p>Revenue Performance</p>
+      <h2 class="text-2xl font-bold text-green-300 mt-2">Excellent</h2>
+      <p class="text-sm text-white/70 mt-1">Achievement: 118.8%</p>
     </div>
 
+    <div class="glass p-5">
+      <p>GOP Performance</p>
+      <h2 class="text-2xl font-bold text-orange-300 mt-2">Watch</h2>
+      <p class="text-sm text-white/70 mt-1">Achievement: 35.7%</p>
+    </div>
 
+    <div class="glass p-5">
+      <p>Cost Control</p>
+      <h2 class="text-2xl font-bold text-red-300 mt-2">Needs Attention</h2>
+      <p class="text-sm text-white/70 mt-1">COGS: 61.9%</p>
+    </div>
 
+  </section>
 
+  <!-- Business Health -->
+  <section class="glass p-6 mb-6">
+    <h2 class="text-xl font-semibold mb-4">Overall Business Health</h2>
+    <div class="text-4xl font-bold text-orange-300">WATCHLIST</div>
+  </section>
 
+  <!-- Alerts -->
+  <section class="glass p-6 mb-6">
+    <h2 class="text-xl font-semibold mb-4">Key Alerts</h2>
 
+    <div class="space-y-2 text-white/90">
+      <p>⚠ Food cost above target</p>
+      <p>⚠ Beverage sales dropped vs last year</p>
+      <p>⚠ GOP below monthly target</p>
+    </div>
+  </section>
 
-    <!-- KPI -->
-    <section class="bg-emerald-200 rounded-3xl p-6 shadow">
+  <!-- Notes -->
+  <section class="glass p-6">
+    <h2 class="text-xl font-semibold mb-4">Management Notes</h2>
 
-      <h3 class="font-bold text-xl mb-4">
-        Performance Review
-      </h3>
-
-
-      <div class="grid grid-cols-3 gap-4">
-
-        <div class="bg-white/70 rounded-2xl p-4">
-          <small>Revenue</small>
-          <h4 id="reviewRevenueCard"></h4>
-        </div>
-
-        <div class="bg-white/70 rounded-2xl p-4">
-          <small>Total Cost</small>
-          <h4 id="reviewCostCard"></h4>
-        </div>
-
-        <div class="bg-white/70 rounded-2xl p-4">
-          <small>GOP</small>
-          <h4 id="reviewGopCard"></h4>
-        </div>
-
-      </div>
-
-
-
-      <div class="grid grid-cols-3 gap-4 mt-4">
-
-        <div class="bg-white/70 rounded-2xl p-4">
-          <small>Margin</small>
-          <h4 id="reviewMarginCard"></h4>
-        </div>
-
-        <div class="bg-white/70 rounded-2xl p-4">
-          <small>Food Cost %</small>
-          <h4 id="reviewFoodCostCard"></h4>
-        </div>
-
-        <div class="bg-white/70 rounded-2xl p-4">
-          <small>Beverage Cost %</small>
-          <h4 id="reviewBevCostCard"></h4>
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-
-
-
-
-
-    <!-- INSIGHT -->
-    <section class="bg-white rounded-3xl p-6 shadow">
-
-      <h3 class="font-bold text-xl mb-4">
-        Management Recommendations
-      </h3>
-
-      <div id="recommendationBox"></div>
-
-    </section>
-
-
-  </main>
+    <textarea
+      rows="8"
+      placeholder="Write management notes here..."
+      class="w-full p-4 rounded-2xl text-black"></textarea>
+  </section>
 
 </div>
-
-
-
-
-
-<script src="assets/js/storage.js"></script>
-<script src="assets/js/settings.js"></script>
-<script src="assets/js/calculations.js"></script>
-<script src="assets/js/review.js"></script>
 
 </body>
 </html>
