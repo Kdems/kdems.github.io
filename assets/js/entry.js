@@ -19,21 +19,12 @@ function initEntryPage() {
 
 
 
-// ====================
-// FORM
-// ====================
-
 function bindEntryForm() {
 
   const form =
     document.getElementById(
       "entryForm"
     );
-
-
-  if (
-    !form
-  ) return;
 
 
 
@@ -51,67 +42,38 @@ function bindEntryForm() {
       const payload = {
 
         date:
-          getInputValue(
+          getValue(
             "entryDate"
           ),
 
 
 
+        budget:
+          Number(
+            getValue(
+              "dailyBudget"
+            )
+          ),
+
+
+
         foodRevenue:
-          getInputValue(
-            "foodRevenue"
+          Number(
+            getValue(
+              "foodRevenue"
+            )
           ),
 
 
 
         beverageRevenue:
-          getInputValue(
-            "beverageRevenue"
-          ),
-
-
-
-        foodCost:
-          getInputValue(
-            "foodCost"
-          ),
-
-
-
-        beverageCost:
-          getInputValue(
-            "beverageCost"
-          ),
-
-
-
-        fixCost:
-          getInputValue(
-            "fixCost"
-          ),
-
-
-
-        budget:
-          getInputValue(
-            "dailyBudget"
+          Number(
+            getValue(
+              "beverageRevenue"
+            )
           )
 
       };
-
-
-
-      if (
-        !payload.date
-      ) {
-
-        alert(
-          "Please select date"
-        );
-
-        return;
-
-      }
 
 
 
@@ -137,26 +99,17 @@ function bindEntryForm() {
 
 
 
-// ====================
-// LIST
-// ====================
-
 function renderEntryList() {
+
+  const entries =
+    getAllEntries();
+
+
 
   const container =
     document.getElementById(
       "entryList"
     );
-
-
-  if (
-    !container
-  ) return;
-
-
-
-  const entries =
-    getAllEntries();
 
 
 
@@ -165,8 +118,9 @@ function renderEntryList() {
   ) {
 
     container.innerHTML =
+
       `
-      <div class="text-slate-400 py-4">
+      <div class="text-slate-400">
         No entries found
       </div>
       `;
@@ -178,60 +132,43 @@ function renderEntryList() {
 
 
   container.innerHTML =
+
     entries
       .slice()
       .reverse()
       .map(
-        entry => {
+        item => {
 
-          const total =
+          const revenue =
 
-            Number(
-              entry.foodRevenue || 0
-            ) +
+            item.foodRevenue +
 
-            Number(
-              entry.beverageRevenue || 0
-            );
+            item.beverageRevenue;
 
 
 
           return `
 
             <div
-              class="grid grid-cols-3 border-b py-3 gap-3">
+              class="flex justify-between border-b py-3">
 
-              <div>
+              <span>
 
                 ${formatDate(
-                  entry.date
+                  item.date
                 )}
 
-              </div>
+              </span>
 
 
 
-              <div class="font-bold">
+              <span class="font-bold">
 
                 ${money(
-                  total
+                  revenue
                 )}
 
-              </div>
-
-
-
-              <div class="text-right">
-
-                <button
-                  onclick="removeEntry(${entry.id})"
-                  class="text-red-500">
-
-                  Delete
-
-                </button>
-
-              </div>
+              </span>
 
             </div>
 
@@ -247,48 +184,14 @@ function renderEntryList() {
 
 
 
-// ====================
-// DELETE
-// ====================
-
-function removeEntry(
-  entryId
-) {
-
-  deleteEntry(
-    entryId
-  );
-
-
-  renderEntryList();
-
-}
-
-
-
-
-
-// ====================
-// HELPERS
-// ====================
-
-function getInputValue(
+function getValue(
   id
 ) {
 
-  const input =
-    document.getElementById(
+  return document
+    .getElementById(
       id
-    );
-
-
-  if (
-    !input
-  ) return 0;
-
-
-
-  return input.value;
+    ).value;
 
 }
 
@@ -306,14 +209,8 @@ function money(
       .currency +
 
     Number(
-      value || 0
-    ).toLocaleString(
-      undefined,
-      {
-        maximumFractionDigits:
-          0
-      }
-    )
+      value
+    ).toLocaleString()
 
   );
 
