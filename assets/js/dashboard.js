@@ -1,80 +1,841 @@
-(function exposeDashboard(global) {
-  const calc = global.SKYBARCalculations;
+let selectedYear =
+  new Date().getFullYear();
 
-  function kpi(label, value, detail, tone = '') {
-    return `<article class="kpi-card"><span>${label}</span><strong>${value}</strong><small class="${tone}">${detail}</small></article>`;
+let selectedMonth =
+  new Date().getMonth() + 1;
+
+
+
+document.addEventListener(
+  "DOMContentLoaded",
+  initDashboard
+);
+
+
+
+
+
+function initDashboard() {
+
+  setupFilters();
+
+  renderDashboard();
+
+}
+
+
+
+
+
+// ====================
+// FILTER
+// ====================
+
+function setupFilters() {
+
+  const yearFilter =
+    document.getElementById(
+      "yearFilter"
+    );
+
+  const monthFilter =
+    document.getElementById(
+      "monthFilter"
+    );
+
+
+  if (
+    yearFilter
+  ) {
+
+    for (
+      let y = 2025;
+      y <= 2040;
+      y++
+    ) {
+
+      yearFilter.innerHTML += `
+        <option
+          value="${y}">
+          ${y}
+        </option>
+      `;
+
+    }
+
   }
 
-  function renderKpis(period) {
-    const margin = calc.margin(period);
-    const prime = calc.primeCost(period);
-    const salesVariance = calc.pct(period.netSales - period.salesTarget, period.salesTarget);
-    document.querySelector('#kpi-grid').innerHTML = [
-      kpi('Net sales', calc.money.format(period.netSales), `${salesVariance >= 0 ? '+' : ''}${salesVariance.toFixed(1)}% vs target`, salesVariance >= 0 ? 'positive' : 'negative'),
-      kpi('Operating profit', calc.money.format(margin.profit), `${margin.rate.toFixed(1)}% operating margin`, margin.rate >= 15 ? 'positive' : 'warning'),
-      kpi('Prime cost', `${prime.rate.toFixed(1)}%`, calc.money.format(prime.total), prime.rate <= 65 ? 'positive' : 'negative'),
-      kpi('Covers', calc.number.format(period.covers), `${calc.money.format(calc.averageCheck(period))} average check`, 'positive')
-    ].join('');
+
+
+  if (
+    monthFilter
+  ) {
+
+    for (
+      let m = 1;
+      m <= 12;
+      m++
+    ) {
+
+      monthFilter.innerHTML += `
+        <option
+          value="${m}">
+          ${m}
+        </option>
+      `;
+
+    }
+
   }
 
-  function renderRevenue(period) {
-    const max = Math.max(...period.channels.map((channel) => channel.sales));
-    document.querySelector('#revenue-chart').innerHTML = period.channels.map((channel) => `
-      <div class="bar-row">
-        <strong>${channel.name}</strong>
-        <div class="bar-track"><div class="bar-fill" style="width:${calc.pct(channel.sales, max)}%"></div></div>
-        <span>${calc.money.format(channel.sales)}</span>
+
+
+  if (
+    yearFilter
+  ) {
+
+    yearFilter.value =
+      selectedYear;
+
+
+    yearFilter.onchange =
+      function() {
+
+        selectedYear =
+          Number(
+            this.value
+          );
+
+        renderDashboard();
+
+      };
+
+  }
+
+
+
+  if (
+    monthFilter
+  ) {
+
+    monthFilter.value =
+      selectedMonth;
+
+
+    monthFilter.onchange =
+      function() {
+
+        selectedMonth =
+          Number(
+            this.value
+          );
+
+        renderDashboard();
+
+      };
+
+  }
+
+}
+
+
+
+
+
+// ====================
+// MAIN
+// ====================
+
+function renderDashboard() {
+
+  const entries =
+    filterEntries(
+      selectedYear,
+      selectedMonth
+    );
+
+
+  const data =
+    calculatePeriodSummary(
+      entries
+    );
+
+
+  renderAlerts(
+    data,
+    entries
+  );
+
+  renderYtd(
+    data
+  );
+
+  renderMtd(
+    data,
+    entries
+  );
+
+  renderGop(
+    data
+  );
+
+  renderFoodBeverage(
+    data
+  );
+
+  renderSummary(
+    data,
+    entries
+  );
+
+  renderRecentEntries(
+    entries
+  );
+
+
+
+  if (
+    entries.length &&
+    typeof renderCharts ===
+      "function"
+  ) {
+
+    renderCharts(
+      entries
+    );
+
+  }
+
+}
+
+
+
+
+
+// ====================
+// ALERTS
+// ====================
+
+function renderAlerts(
+  data,
+  entries
+) {
+
+  const settings =
+    getSettings();
+
+
+  const budget =
+    Number(
+      settings.monthlyBudget || 0
+    );
+
+
+  const achievement =
+    percentage(
+      data.totalRevenue,
+      budget
+    );
+
+
+  setText(
+    "revenueAlertCard",
+
+    achievement >= 100
+
+      ? "🟢 ON TRACK"
+
+      : "🔴 BELOW"
+  );
+
+
+  setText(
+    "projectionAlertCard",
+
+    entries.length
+
+      ? "🟢 LIVE"
+
+      : "⚪ NO DATA"
+  );
+
+
+  setText(
+    "foodAlertCard",
+
+    "🟢 LIVE"
+  );
+
+
+  setText(
+    "marginAlertCard",
+
+    "🟢 LIVE"
+  );
+
+}
+
+
+
+
+
+// ====================
+// KPI
+// ====================
+
+function renderYtd(
+  data
+) {
+
+  const settings =
+    getSettings();
+
+
+  setText(
+    "ytdRevenueCard",
+    money(
+      data.totalRevenue
+    )
+  );
+
+
+  setText(
+    "ytdBudgetCard",
+    money(
+      settings.annualRevenueTarget || 0
+    )
+  );
+
+
+  setText(
+    "ytdAchievementCard",
+    percent(
+      percentage(
+        data.totalRevenue,
+        settings.annualRevenueTarget
+      )
+    )
+  );
+
+
+  setText(
+    "ytdVarianceCard",
+    money(
+      data.totalRevenue -
+      settings.annualRevenueTarget
+    )
+  );
+
+}
+
+
+
+
+
+function renderMtd(
+  data,
+  entries
+) {
+
+  const settings =
+    getSettings();
+
+
+  const days =
+    entries.length || 1;
+
+
+  const avg =
+    data.totalRevenue /
+    days;
+
+
+  const daysInMonth =
+    new Date(
+      selectedYear,
+      selectedMonth,
+      0
+    ).getDate();
+
+
+  const projection =
+    avg *
+    daysInMonth;
+
+
+  setText(
+    "mtdRevenueCard",
+    money(
+      data.totalRevenue
+    )
+  );
+
+
+  setText(
+    "dailyPaceCard",
+    money(
+      avg
+    )
+  );
+
+
+  setText(
+    "projectionCard",
+    money(
+      projection
+    )
+  );
+
+
+  setText(
+    "projectionGapCard",
+    money(
+      projection -
+      settings.monthlyBudget
+    )
+  );
+
+
+  setText(
+    "daysLeftCard",
+    daysInMonth -
+      days
+  );
+
+}
+
+
+
+
+
+function renderGop(
+  data
+) {
+
+  setText(
+    "gopRevenueCard",
+    money(
+      data.totalRevenue
+    )
+  );
+
+  setText(
+    "gopCostCard",
+    money(
+      data.totalCost
+    )
+  );
+
+  setText(
+    "gopMainCard",
+    money(
+      data.totalGop
+    )
+  );
+
+  setText(
+    "gopMarginCard",
+    percent(
+      data.gopMargin
+    )
+  );
+
+}
+
+
+
+
+
+function renderFoodBeverage(
+  data
+) {
+
+  setText(
+    "foodRevenueCard",
+    money(
+      data.totalFoodRevenue
+    )
+  );
+
+  setText(
+    "bevRevenueCard",
+    money(
+      data.totalBeverageRevenue
+    )
+  );
+
+  setText(
+    "foodMixCard",
+    percent(
+      percentage(
+        data.totalFoodRevenue,
+        data.totalRevenue
+      )
+    )
+  );
+
+  setText(
+    "bevMixCard",
+    percent(
+      percentage(
+        data.totalBeverageRevenue,
+        data.totalRevenue
+      )
+    )
+  );
+
+}
+
+
+
+
+
+function renderSummary(
+  data,
+  entries
+) {
+
+  setText(
+    "summaryRevenueCard",
+    money(
+      data.totalRevenue
+    )
+  );
+
+  setText(
+    "summaryBudgetCard",
+    money(
+      getSettings()
+        .monthlyBudget || 0
+    )
+  );
+
+
+  const best =
+    getBestEntry(
+      entries
+    );
+
+
+  const worst =
+    getWorstEntry(
+      entries
+    );
+
+
+  setText(
+    "bestDayCard",
+
+    best
+
+      ? formatDate(
+          best.date
+        )
+
+      : "-"
+  );
+
+
+  setText(
+    "worstDayCard",
+
+    worst
+
+      ? formatDate(
+          worst.date
+        )
+
+      : "-"
+  );
+
+}
+
+
+
+
+
+function renderRecentEntries(
+  entries
+) {
+
+  const el =
+    document.getElementById(
+      "recentEntriesList"
+    );
+
+
+  if (
+    !el
+  ) return;
+
+
+
+  if (
+    !entries.length
+  ) {
+
+    el.innerHTML =
+      `
+      <div class="text-slate-400">
+        No entries
       </div>
-    `).join('');
-    document.querySelector('#check-average-badge').textContent = `Avg check ${calc.money.format(calc.averageCheck(period))}`;
+      `;
+
+    return;
+
   }
 
-  function renderPrimeCost(period) {
-    const prime = calc.primeCost(period);
-    const gauge = document.querySelector('#prime-cost-gauge');
-    gauge.style.setProperty('--gauge', `${Math.min(prime.rate, 100) * 3.6}deg`);
-    gauge.querySelector('.gauge-value').textContent = `${prime.rate.toFixed(1)}%`;
-    document.querySelector('#prime-cost-list').innerHTML = [
-      ['Food cost', period.foodCost],
-      ['Beverage cost', period.beverageCost],
-      ['Labor cost', period.laborCost]
-    ].map(([label, value]) => `<div><dt>${label}</dt><dd>${calc.money.format(value)}</dd></div>`).join('');
+
+
+  el.innerHTML =
+    entries
+      .slice()
+      .reverse()
+      .map(
+        entry => {
+
+          const total =
+
+            Number(
+              entry.foodRevenue || 0
+            ) +
+
+            Number(
+              entry.beverageRevenue || 0
+            );
+
+
+          return `
+
+            <div class="grid grid-cols-2 border-b py-3">
+
+              <div>
+                ${formatDate(
+                  entry.date
+                )}
+              </div>
+
+              <div class="text-right font-bold">
+                ${money(
+                  total
+                )}
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join("");
+
+}
+
+
+
+
+
+// ====================
+// HELPERS
+// ====================
+
+function getBestEntry(
+  entries
+) {
+
+  if (
+    !entries.length
+  ) return null;
+
+
+  return entries.reduce(
+    (
+      best,
+      current
+    ) => {
+
+      const bestValue =
+
+        Number(
+          best.foodRevenue || 0
+        ) +
+
+        Number(
+          best.beverageRevenue || 0
+        );
+
+
+      const currentValue =
+
+        Number(
+          current.foodRevenue || 0
+        ) +
+
+        Number(
+          current.beverageRevenue || 0
+        );
+
+
+      return
+
+        currentValue >
+        bestValue
+
+          ? current
+
+          : best;
+
+    }
+  );
+
+}
+
+
+
+function getWorstEntry(
+  entries
+) {
+
+  if (
+    !entries.length
+  ) return null;
+
+
+  return entries.reduce(
+    (
+      worst,
+      current
+    ) => {
+
+      const worstValue =
+
+        Number(
+          worst.foodRevenue || 0
+        ) +
+
+        Number(
+          worst.beverageRevenue || 0
+        );
+
+
+      const currentValue =
+
+        Number(
+          current.foodRevenue || 0
+        ) +
+
+        Number(
+          current.beverageRevenue || 0
+        );
+
+
+      return
+
+        currentValue <
+        worstValue
+
+          ? current
+
+          : worst;
+
+    }
+  );
+
+}
+
+
+
+function setText(
+  id,
+  value
+) {
+
+  const el =
+    document.getElementById(
+      id
+    );
+
+
+  if (
+    el
+  ) {
+
+    el.innerHTML =
+      value;
+
   }
 
-  function renderExpenses(period) {
-    document.querySelector('#expense-table').innerHTML = period.expenseControls.map((item) => {
-      const variance = calc.variance(item.actual, item.target);
-      const tone = variance <= 0 ? 'positive' : 'negative';
-      return `<tr><td>${item.category}</td><td>${calc.money.format(item.actual)}</td><td>${calc.money.format(item.target)}</td><td class="${tone}">${variance >= 0 ? '+' : ''}${calc.money.format(variance)}</td></tr>`;
-    }).join('');
-  }
+}
 
-  function renderCloseControls(period) {
-    document.querySelector('#close-controls').innerHTML = period.closeControls.map((control) => {
-      const tone = control.status === 'Complete' ? 'positive' : 'warning';
-      return `<li><strong>${control.name}</strong><br><span class="badge ${tone}">${control.status}</span> <small>${control.owner}</small></li>`;
-    }).join('');
-  }
 
-  function renderAlerts(period) {
-    const prime = calc.primeCost(period);
-    const margin = calc.margin(period);
-    const alerts = [];
-    if (prime.rate > 65) alerts.push(`Prime cost is ${prime.rate.toFixed(1)}%; review labor scheduling and purchasing controls.`);
-    if (margin.rate < 15) alerts.push(`Operating margin is ${margin.rate.toFixed(1)}%; leadership review required.`);
-    if (!alerts.length) alerts.push('Restaurant finance controls are within the current executive thresholds.');
-    document.querySelector('#performance-alerts').innerHTML = alerts.map((alert) => `<div class="alert">${alert}</div>`).join('');
-  }
 
-  function render(period) {
-    renderKpis(period);
-    renderRevenue(period);
-    renderPrimeCost(period);
-    renderExpenses(period);
-    renderCloseControls(period);
-    renderAlerts(period);
-    document.querySelector('#cash-position-side').textContent = calc.money.format(calc.cashPosition(period));
-  }
+function percentage(
+  actual,
+  target
+) {
 
-  global.SKYBARDashboard = { render };
-})(window);
+  if (
+    !target
+  ) return 0;
+
+
+  return (
+    actual /
+    target
+  ) * 100;
+
+}
+
+
+
+function percent(
+  value
+) {
+
+  return (
+    Number(
+      value || 0
+    ).toFixed(1) +
+    "%"
+  );
+
+}
+
+
+
+function money(
+  value
+) {
+
+  return (
+
+    getSettings()
+      .currency +
+
+    Number(
+      value || 0
+    ).toLocaleString(
+      undefined,
+      {
+        maximumFractionDigits:
+          0
+      }
+    )
+
+  );
+
+}
+
+
+
+function formatDate(
+  value
+) {
+
+  return new Date(
+    value
+  ).toLocaleDateString(
+    "en-GB"
+  );
+
+}
