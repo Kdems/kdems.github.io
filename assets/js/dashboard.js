@@ -399,6 +399,28 @@ function renderSummary(
   entries
 ) {
 
+  const budget =
+    getSettings()
+      .monthlyBudget;
+
+
+
+  const achievement =
+
+    budget
+
+      ? (
+
+          summary.totalRevenue /
+
+          budget
+
+        ) * 100
+
+      : 0;
+
+
+
   setText(
     "summaryRevenueCard",
     money(
@@ -411,8 +433,7 @@ function renderSummary(
   setText(
     "summaryBudgetCard",
     money(
-      getSettings()
-        .monthlyBudget
+      budget
     )
   );
 
@@ -436,9 +457,11 @@ function renderSummary(
     "bestDayCard",
 
     best
+
       ? formatDate(
           best.date
         )
+
       : "-"
   );
 
@@ -448,85 +471,20 @@ function renderSummary(
     "worstDayCard",
 
     worst
+
       ? formatDate(
           worst.date
         )
+
       : "-"
   );
 
-}
 
 
-
-
-
-// ======================
-// RECENT
-// ======================
-
-function renderRecentEntries(
-  entries
-) {
-
-  const container =
-    document.getElementById(
-      "recentEntriesList"
-    );
-
-
-  if (
-    !container
-  ) return;
-
-
-
-  container.innerHTML =
-
-    entries
-      .slice()
-      .reverse()
-      .slice(
-        0,
-        8
-      )
-      .map(
-        item => {
-
-          const total =
-
-            Number(
-              item.foodRevenue || 0
-            ) +
-
-            Number(
-              item.beverageRevenue || 0
-            );
-
-
-
-          return `
-
-            <div class="flex justify-between border-b py-3">
-
-              <span>
-                ${formatDate(
-                  item.date
-                )}
-              </span>
-
-              <span class="font-bold">
-                ${money(
-                  total
-                )}
-              </span>
-
-            </div>
-
-          `;
-
-        }
-      )
-      .join("");
+  paintKpiColor(
+    "summaryRevenueCard",
+    achievement
+  );
 
 }
 
