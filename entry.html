@@ -1,175 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
-
-  <title>
-    SKYBAR Daily Entry
-  </title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finance Entry</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
+  <style>
+    body {
+      background: linear-gradient(135deg,#B794F4,#8B5CF6,#93C5FD);
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    .glass {
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+    input {
+      color: black;
+    }
+  </style>
 </head>
+<body class="p-4 md:p-8 text-white">
 
-<body class="bg-slate-100">
+<div class="max-w-6xl mx-auto">
 
-<div class="flex min-h-screen">
+  <div class="glass p-6 mb-6">
+    <h1 class="text-3xl font-bold">Daily Finance Entry</h1>
+    <p class="text-white/70 mt-2">Restaurant / Hospitality Data Entry</p>
+  </div>
 
+  <!-- Revenue Entry -->
+  <div class="glass p-6 mb-6">
+    <h2 class="text-xl font-semibold mb-4">Revenue Entry (Daily)</h2>
 
-
-
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-slate-950 text-white p-6">
-
-    <h1 class="text-4xl font-bold mb-10">
-      SKYBAR
-    </h1>
-
-
-    <nav class="space-y-3">
-
-      <a href="index.html"
-         class="block px-4 py-3 rounded-xl">
-         Dashboard
-      </a>
-
-      <a href="entry.html"
-         class="block bg-slate-800 px-4 py-3 rounded-xl">
-         Daily Entry
-      </a>
-
-      <a href="review.html"
-         class="block px-4 py-3 rounded-xl">
-         Operating Review
-      </a>
-
-      <a href="reports.html"
-         class="block px-4 py-3 rounded-xl">
-         Reports
-      </a>
-
-      <a href="settings.html"
-         class="block px-4 py-3 rounded-xl">
-         Settings
-      </a>
-
-    </nav>
-
-  </aside>
-
-
-
-
-
-
-
-
-  <!-- MAIN -->
-  <main class="flex-1 p-8 space-y-6">
-
-
-    <div>
-
-      <h2 class="text-4xl font-bold">
-        Daily Entry
-      </h2>
-
-      <p class="text-slate-500">
-        Enter daily revenue
-      </p>
-
+    <div class="grid md:grid-cols-3 gap-4">
+      <input id="entryDate" type="date" class="p-3 rounded-xl">
+      <input id="foodRevenue" type="number" placeholder="Food Revenue" class="p-3 rounded-xl">
+      <input id="bevRevenue" type="number" placeholder="Beverage Revenue" class="p-3 rounded-xl">
+      <input id="otherRevenue" type="number" placeholder="Other Revenue" class="p-3 rounded-xl">
+      <input id="budget" readonly placeholder="Daily Budget" class="p-3 rounded-xl bg-gray-200">
+      <input id="totalRevenue" readonly placeholder="Total Revenue" class="p-3 rounded-xl bg-gray-200">
     </div>
+  </div>
 
+  <!-- Target Entry -->
+  <div class="glass p-6 mb-6">
+    <h2 class="text-xl font-semibold mb-4">Target Entry (Monthly)</h2>
 
+    <div class="grid md:grid-cols-3 gap-4">
+      <input id="monthlyFoodTarget" type="number" placeholder="Monthly Food Target" class="p-3 rounded-xl">
+      <input id="monthlyBevTarget" type="number" placeholder="Monthly Beverage Target" class="p-3 rounded-xl">
+      <input id="monthlyRevenue" readonly placeholder="Monthly Revenue Target" class="p-3 rounded-xl bg-gray-200">
 
+      <input id="lyFood" type="number" placeholder="LY Food Revenue" class="p-3 rounded-xl">
+      <input id="lyBev" type="number" placeholder="LY Beverage Revenue" class="p-3 rounded-xl">
+      <input id="lyOther" type="number" placeholder="LY Other Revenue" class="p-3 rounded-xl">
 
+      <input id="gopTarget" type="number" placeholder="Monthly GOP Target" class="p-3 rounded-xl">
+    </div>
+  </div>
 
+  <!-- Cost Entry -->
+  <div class="glass p-6 mb-6">
+    <h2 class="text-xl font-semibold mb-4">Cost Entry (Monthly)</h2>
 
+    <div class="grid md:grid-cols-3 gap-4">
+      <input id="foodCostPercent" type="number" placeholder="Food Cost %" class="p-3 rounded-xl">
+      <input id="bevCostPercent" type="number" placeholder="Beverage Cost %" class="p-3 rounded-xl">
+      <input id="fixedCostPercent" type="number" placeholder="Fixed Cost %" class="p-3 rounded-xl">
+    </div>
+  </div>
 
+  <!-- Annual -->
+  <div class="glass p-6 mb-6">
+    <h2 class="text-xl font-semibold mb-4">Annual Target</h2>
 
-    <section class="bg-white rounded-3xl p-6 shadow">
-
-      <form
-        id="entryForm"
-        class="grid grid-cols-2 gap-4">
-
-
-
-        <input
-          id="entryDate"
-          type="date"
-          class="border rounded-xl p-3">
-
-
-
-        <input
-          id="dailyBudget"
-          type="number"
-          placeholder="Daily Budget"
-          class="border rounded-xl p-3">
-
-
-
-        <input
-          id="foodRevenue"
-          type="number"
-          placeholder="Food Revenue"
-          class="border rounded-xl p-3">
-
-
-
-        <input
-          id="beverageRevenue"
-          type="number"
-          placeholder="Beverage Revenue"
-          class="border rounded-xl p-3">
-
-
-
-        <button
-          type="submit"
-          class="bg-slate-950 text-white rounded-xl p-3">
-
-          Save Entry
-
-        </button>
-
-      </form>
-
-    </section>
-
-
-
-
-
-
-
-
-    <section class="bg-white rounded-3xl p-6 shadow">
-
-      <h3 class="font-bold text-xl mb-4">
-        Entry History
-      </h3>
-
-      <div id="entryList"></div>
-
-    </section>
-
-
-  </main>
+    <div class="grid md:grid-cols-2 gap-4">
+      <input type="number" placeholder="Annual Revenue" class="p-3 rounded-xl">
+      <input type="number" placeholder="Annual GOP" class="p-3 rounded-xl">
+    </div>
+  </div>
 
 </div>
 
+<script>
+function calculateDaysInMonth(dateString) {
+  if (!dateString) return 30;
+  const date = new Date(dateString);
+  return new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
+}
 
-<script src="assets/js/storage.js"></script>
-<script src="assets/js/settings.js"></script>
-<script src="assets/js/entry.js"></script>
+function calculateAll() {
+  const food = Number(document.getElementById('foodRevenue').value) || 0;
+  const bev = Number(document.getElementById('bevRevenue').value) || 0;
+  const other = Number(document.getElementById('otherRevenue').value) || 0;
+  const date = document.getElementById('entryDate').value;
+
+  const monthlyFood = Number(document.getElementById('monthlyFoodTarget').value) || 0;
+  const monthlyBev = Number(document.getElementById('monthlyBevTarget').value) || 0;
+
+  const total = food + bev + other;
+  document.getElementById('totalRevenue').value = total.toLocaleString();
+
+  const monthlyBudget = monthlyFood + monthlyBev;
+  document.getElementById('monthlyRevenue').value = monthlyBudget.toLocaleString();
+
+  const days = calculateDaysInMonth(date);
+  const dailyBudget = monthlyBudget / days;
+  document.getElementById('budget').value = Math.round(dailyBudget).toLocaleString();
+}
+
+['foodRevenue','bevRevenue','otherRevenue','entryDate','monthlyFoodTarget','monthlyBevTarget']
+.forEach(id => {
+  document.getElementById(id).addEventListener('input', calculateAll);
+});
+</script>
 
 </body>
 </html>
