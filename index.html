@@ -1,120 +1,386 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SKYBAR Finance Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/main.css" />
-  <link rel="stylesheet" href="assets/css/components.css" />
-  <link rel="stylesheet" href="assets/css/dashboard.css" />
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <title>
+    SKYBAR Executive Dashboard
+  </title>
+
+  <link rel="icon" href="data:,">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
-<body data-page="dashboard">
-  <div class="app-shell">
-    <aside class="sidebar" aria-label="Primary navigation">
-      <div class="brand-lockup">
-        <div class="brand-mark">SB</div>
-        <div>
-          <p class="eyebrow">SKYBAR</p>
-          <h1>Finance</h1>
-        </div>
+
+
+
+<body class="bg-slate-100 font-sans">
+
+<div class="flex min-h-screen">
+
+
+
+  <!-- SIDEBAR -->
+  <aside class="w-64 bg-slate-950 text-white p-6">
+
+    <h1 class="text-4xl font-bold mb-10">
+      SKYBAR
+    </h1>
+
+
+
+    <nav class="space-y-3">
+
+      <a
+        href="index.html"
+        class="block bg-slate-800 rounded-xl px-4 py-3">
+        Dashboard
+      </a>
+
+      <a
+        href="entry.html"
+        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
+        Daily Entry
+      </a>
+
+      <a
+        href="review.html"
+        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
+        Operating Review
+      </a>
+
+      <a
+        href="reports.html"
+        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
+        Reports
+      </a>
+
+      <a
+        href="settings.html"
+        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
+        Settings
+      </a>
+
+    </nav>
+
+  </aside>
+
+
+
+
+
+
+
+
+  <!-- MAIN -->
+  <main class="flex-1 p-8 space-y-6">
+
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center">
+
+      <div>
+
+        <h2 class="text-4xl font-bold">
+          Executive Dashboard
+        </h2>
+
+        <p class="text-slate-500">
+          SKYBAR Financial Intelligence
+        </p>
+
       </div>
-      <nav class="nav-stack">
-        <a class="nav-link active" href="index.html" aria-current="page">Dashboard</a>
-        <a class="nav-link" href="generic.html">Operations Review</a>
-        <a class="nav-link" href="elements.html">UI Library</a>
-      </nav>
-      <section class="side-card">
-        <span class="label">Cash control</span>
-        <strong id="cash-position-side">$0</strong>
-        <small>Bank deposits less open payables</small>
-      </section>
-    </aside>
 
-    <main class="main-content">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow">Restaurant finance command center</p>
-          <h2>SKYBAR Finance Dashboard</h2>
+
+
+      <div class="flex gap-3">
+
+        <select
+          id="yearFilter"
+          class="bg-white border rounded-xl px-4 py-2">
+        </select>
+
+        <select
+          id="monthFilter"
+          class="bg-white border rounded-xl px-4 py-2">
+        </select>
+
+      </div>
+
+    </div>
+
+
+
+
+
+
+
+
+    <!-- ALERT -->
+    <section class="bg-slate-900 text-white rounded-3xl p-6">
+
+      <h3 class="font-bold text-xl mb-4">
+        Executive Alerts
+      </h3>
+
+
+      <div class="grid grid-cols-4 gap-4">
+
+        <div class="bg-slate-800 rounded-2xl p-4">
+          <small>Revenue</small>
+          <h4 id="revenueAlertCard"></h4>
         </div>
-        <div class="topbar-actions">
-          <label class="field compact">
-            <span>Month</span>
-            <select id="month-filter" aria-label="Filter by month"></select>
-          </label>
-          <label class="field compact">
-            <span>Year</span>
-            <select id="year-filter" aria-label="Filter by year"></select>
-          </label>
-          <button class="button primary" id="save-view" type="button">Save view</button>
+
+        <div class="bg-slate-800 rounded-2xl p-4">
+          <small>Projection</small>
+          <h4 id="projectionAlertCard"></h4>
         </div>
-      </header>
 
-      <section class="alert-strip" id="performance-alerts" aria-live="polite"></section>
+        <div class="bg-slate-800 rounded-2xl p-4">
+          <small>Food Cost</small>
+          <h4 id="foodAlertCard"></h4>
+        </div>
 
-      <section class="kpi-grid" id="kpi-grid" aria-label="Financial KPIs"></section>
+        <div class="bg-slate-800 rounded-2xl p-4">
+          <small>Margin</small>
+          <h4 id="marginAlertCard"></h4>
+        </div>
 
-      <section class="dashboard-grid">
-        <article class="panel span-8">
-          <div class="panel-header">
-            <div>
-              <span class="label">Revenue mix</span>
-              <h3>Sales by dining channel</h3>
-            </div>
-            <span class="badge" id="check-average-badge">Avg check $0</span>
-          </div>
-          <div class="chart-bars" id="revenue-chart"></div>
-        </article>
+      </div>
 
-        <article class="panel span-4">
-          <div class="panel-header">
-            <div>
-              <span class="label">Prime cost</span>
-              <h3>Food + labor</h3>
-            </div>
-          </div>
-          <div class="gauge" id="prime-cost-gauge">
-            <div class="gauge-value">0%</div>
-          </div>
-          <dl class="metric-list" id="prime-cost-list"></dl>
-        </article>
+    </section>
 
-        <article class="panel span-6">
-          <div class="panel-header">
-            <div>
-              <span class="label">Cost controls</span>
-              <h3>Expense variance</h3>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>Category</th><th>Actual</th><th>Target</th><th>Variance</th></tr>
-              </thead>
-              <tbody id="expense-table"></tbody>
-            </table>
-          </div>
-        </article>
 
-        <article class="panel span-6">
-          <div class="panel-header">
-            <div>
-              <span class="label">Cash workflow</span>
-              <h3>Daily close controls</h3>
-            </div>
-          </div>
-          <ul class="close-list" id="close-controls"></ul>
-        </article>
-      </section>
-    </main>
-  </div>
 
-  <script src="assets/js/storage.js"></script>
-  <script src="assets/js/calculations.js"></script>
-  <script src="assets/js/filters.js"></script>
-  <script src="assets/js/dashboard.js"></script>
-  <script src="assets/js/app.js"></script>
+
+
+
+
+
+    <!-- KPI ROW 1 -->
+    <section class="grid grid-cols-4 gap-4">
+
+      <div class="bg-violet-200 rounded-3xl p-5">
+        <small>YTD Revenue</small>
+        <h3 id="ytdRevenueCard"></h3>
+      </div>
+
+      <div class="bg-violet-200 rounded-3xl p-5">
+        <small>YTD Budget</small>
+        <h3 id="ytdBudgetCard"></h3>
+      </div>
+
+      <div class="bg-violet-200 rounded-3xl p-5">
+        <small>Achievement</small>
+        <h3 id="ytdAchievementCard"></h3>
+      </div>
+
+      <div class="bg-violet-200 rounded-3xl p-5">
+        <small>Variance</small>
+        <h3 id="ytdVarianceCard"></h3>
+      </div>
+
+    </section>
+
+
+
+
+
+
+
+
+    <!-- KPI ROW 2 -->
+    <section class="grid grid-cols-5 gap-4">
+
+      <div class="bg-sky-200 rounded-3xl p-5">
+        <small>MTD Revenue</small>
+        <h3 id="mtdRevenueCard"></h3>
+      </div>
+
+      <div class="bg-sky-200 rounded-3xl p-5">
+        <small>Daily Pace</small>
+        <h3 id="dailyPaceCard"></h3>
+      </div>
+
+      <div class="bg-sky-200 rounded-3xl p-5">
+        <small>Projection</small>
+        <h3 id="projectionCard"></h3>
+      </div>
+
+      <div class="bg-sky-200 rounded-3xl p-5">
+        <small>Gap</small>
+        <h3 id="projectionGapCard"></h3>
+      </div>
+
+      <div class="bg-sky-200 rounded-3xl p-5">
+        <small>Days Left</small>
+        <h3 id="daysLeftCard"></h3>
+      </div>
+
+    </section>
+
+
+
+
+
+
+
+
+    <!-- KPI ROW 3 -->
+    <section class="grid grid-cols-4 gap-4">
+
+      <div class="bg-emerald-200 rounded-3xl p-5">
+        <small>Revenue</small>
+        <h3 id="gopRevenueCard"></h3>
+      </div>
+
+      <div class="bg-emerald-200 rounded-3xl p-5">
+        <small>Total Cost</small>
+        <h3 id="gopCostCard"></h3>
+      </div>
+
+      <div class="bg-emerald-200 rounded-3xl p-5">
+        <small>GOP</small>
+        <h3 id="gopMainCard"></h3>
+      </div>
+
+      <div class="bg-emerald-200 rounded-3xl p-5">
+        <small>Margin</small>
+        <h3 id="gopMarginCard"></h3>
+      </div>
+
+    </section>
+
+
+
+
+
+
+
+
+    <!-- F&B -->
+    <section class="grid grid-cols-4 gap-4">
+
+      <div class="bg-orange-200 rounded-3xl p-5">
+        <small>Food Revenue</small>
+        <h3 id="foodRevenueCard"></h3>
+      </div>
+
+      <div class="bg-orange-200 rounded-3xl p-5">
+        <small>Food Mix</small>
+        <h3 id="foodMixCard"></h3>
+      </div>
+
+      <div class="bg-orange-200 rounded-3xl p-5">
+        <small>Beverage Revenue</small>
+        <h3 id="bevRevenueCard"></h3>
+      </div>
+
+      <div class="bg-orange-200 rounded-3xl p-5">
+        <small>Beverage Mix</small>
+        <h3 id="bevMixCard"></h3>
+      </div>
+
+    </section>
+
+
+
+
+
+
+
+
+    <!-- SUMMARY -->
+    <section class="grid grid-cols-4 gap-4">
+
+      <div class="bg-pink-200 rounded-3xl p-5">
+        <small>Revenue</small>
+        <h3 id="summaryRevenueCard"></h3>
+      </div>
+
+      <div class="bg-pink-200 rounded-3xl p-5">
+        <small>Budget</small>
+        <h3 id="summaryBudgetCard"></h3>
+      </div>
+
+      <div class="bg-pink-200 rounded-3xl p-5">
+        <small>Best Day</small>
+        <h3 id="bestDayCard"></h3>
+      </div>
+
+      <div class="bg-pink-200 rounded-3xl p-5">
+        <small>Worst Day</small>
+        <h3 id="worstDayCard"></h3>
+      </div>
+
+    </section>
+
+
+
+
+
+
+
+
+    <!-- CHARTS -->
+    <section class="grid grid-cols-3 gap-4">
+
+      <div class="bg-white rounded-3xl p-5 h-80">
+        <canvas id="revenueChart"></canvas>
+      </div>
+
+      <div class="bg-white rounded-3xl p-5 h-80">
+        <canvas id="gopChart"></canvas>
+      </div>
+
+      <div class="bg-white rounded-3xl p-5 h-80">
+        <canvas id="mixChart"></canvas>
+      </div>
+
+    </section>
+
+
+
+
+
+
+
+
+    <!-- RECENT -->
+    <section class="bg-white rounded-3xl p-6">
+
+      <h3 class="font-bold text-xl mb-4">
+        Recent Entries
+      </h3>
+
+      <div id="recentEntriesList"></div>
+
+    </section>
+
+
+  </main>
+
+</div>
+
+
+
+
+
+<script src="assets/js/storage.js"></script>
+<script src="assets/js/settings.js"></script>
+<script src="assets/js/seed.js"></script>
+<script src="assets/js/calculations.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/dashboard.js"></script>
+
 </body>
 </html>
