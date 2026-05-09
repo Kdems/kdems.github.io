@@ -1,640 +1,72 @@
-document.addEventListener(
-  "DOMContentLoaded",
-  initDashboard
-);
+// assets/js/dashboard.js
 
-
-
-
-
-function initDashboard() {
-
-  setupFilters();
-
-  refreshDashboard();
-
+function formatNumber(num) {
+  return num.toLocaleString();
 }
 
+function animateCounter(elementId, endValue, duration = 1500) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
 
+  let start = 0;
+  const increment = endValue / (duration / 16);
 
+  function updateCounter() {
+    start += increment;
 
-
-// ======================
-// FILTERS
-// ======================
-
-function setupFilters() {
-
-  const yearSelect =
-    document.getElementById(
-      "yearFilter"
-    );
-
-
-  const monthSelect =
-    document.getElementById(
-      "monthFilter"
-    );
-
-
-
-  if (
-    !yearSelect ||
-    !monthSelect
-  ) return;
-
-
-
-  yearSelect.innerHTML =
-    "";
-
-
-
-  for (
-    let year = 2025;
-    year <= 2040;
-    year++
-  ) {
-
-    yearSelect.innerHTML += `
-
-      <option value="${year}">
-        ${year}
-      </option>
-
-    `;
-
+    if (start < endValue) {
+      element.innerText = formatNumber(Math.floor(start));
+      requestAnimationFrame(updateCounter);
+    } else {
+      element.innerText = formatNumber(endValue);
+    }
   }
 
-
-
-  for (
-    let month = 1;
-    month <= 12;
-    month++
-  ) {
-
-    monthSelect.innerHTML += `
-
-      <option value="${month}">
-        ${month}
-      </option>
-
-    `;
-
-  }
-
-
-
-  const today =
-    new Date();
-
-
-
-  yearSelect.value =
-    today.getFullYear();
-
-
-
-  monthSelect.value =
-    today.getMonth() + 1;
-
-
-
-  yearSelect.onchange =
-    refreshDashboard;
-
-
-  monthSelect.onchange =
-    refreshDashboard;
-
+  updateCounter();
 }
 
+function loadRevenueChart() {
+  const ctx = document.getElementById('revenueChart');
+  if (!ctx) return;
 
-
-
-
-// ======================
-// DASHBOARD
-// ======================
-
-function refreshDashboard() {
-
-  const entries =
-    getAllEntries();
-
-
-
-  const summary =
-    calculatePeriodSummary(
-      entries
-    );
-
-
-
-  renderYtd(
-    summary
-  );
-
-
-  renderMtd(
-    summary
-  );
-
-
-  renderGop(
-    summary
-  );
-
-
-  renderFoodBeverage(
-    summary
-  );
-
-
-  renderSummary(
-    summary,
-    entries
-  );
-
-
-  renderRecentEntries(
-    entries
-  );
-
-
-
-  if (
-    typeof renderCharts ===
-    "function"
-  ) {
-
-    renderCharts(
-      entries
-    );
-
-  }
-
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+      datasets: [{
+        label: 'Revenue',
+        data: [420000, 580000, 730000, 946573],
+        borderColor: 'white',
+        backgroundColor: 'rgba(255,255,255,0.1)',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: {
+            color: 'white'
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: 'white' }
+        },
+        y: {
+          ticks: { color: 'white' }
+        }
+      }
+    }
+  });
 }
 
-
-
-
-
-// ======================
-// YTD
-// ======================
-
-function renderYtd(
-  summary
-) {
-
-  setText(
-    "ytdRevenueCard",
-    money(
-      summary.totalRevenue
-    )
-  );
-
-
-
-  setText(
-    "ytdBudgetCard",
-    money(
-      getSettings()
-        .annualRevenueTarget
-    )
-  );
-
-
-
-  setText(
-    "ytdAchievementCard",
-    percent(
-      summary.ytdAchievement
-    )
-  );
-
-
-
-  setText(
-    "ytdVarianceCard",
-    money(
-      summary.ytdVariance
-    )
-  );
-
-
-
-  setText(
-    "ytdRemainingCard",
-    money(
-      summary.ytdRemaining
-    )
-  );
-
+function initializeDashboard() {
+  animateCounter('ytdRevenue', 2676573);
+  animateCounter('ytdBudget', 2748696);
+  loadRevenueChart();
 }
 
-
-
-
-
-// ======================
-// MTD
-// ======================
-
-function renderMtd(
-  summary
-) {
-
-  setText(
-    "mtdRevenueCard",
-    money(
-      summary.totalRevenue
-    )
-  );
-
-
-
-  setText(
-    "dailyPaceCard",
-    money(
-      summary.dailyPace
-    )
-  );
-
-
-
-  setText(
-    "projectionCard",
-    money(
-      summary.projectedRevenue
-    )
-  );
-
-
-
-  setText(
-    "projectionGapCard",
-    money(
-      summary.projectionGap
-    )
-  );
-
-
-
-  setText(
-    "daysLeftCard",
-    summary.daysLeft
-  );
-
-}
-
-
-
-
-
-// ======================
-// GOP
-// ======================
-
-function renderGop(
-  summary
-) {
-
-  setText(
-    "gopRevenueCard",
-    money(
-      summary.totalRevenue
-    )
-  );
-
-
-
-  setText(
-    "gopCostCard",
-    money(
-      summary.totalCost
-    )
-  );
-
-
-
-  setText(
-    "gopMainCard",
-    money(
-      summary.totalGop
-    )
-  );
-
-
-
-  setText(
-    "gopMarginCard",
-    percent(
-      summary.gopMargin
-    )
-  );
-
-}
-
-
-
-
-
-// ======================
-// F&B
-// ======================
-
-function renderFoodBeverage(
-  summary
-) {
-
-  setText(
-    "foodRevenueCard",
-    money(
-      summary.foodRevenue
-    )
-  );
-
-
-
-  setText(
-    "foodMixCard",
-    percent(
-      summary.foodMix
-    )
-  );
-
-
-
-  setText(
-    "bevRevenueCard",
-    money(
-      summary.beverageRevenue
-    )
-  );
-
-
-
-  setText(
-    "bevMixCard",
-    percent(
-      summary.beverageMix
-    )
-  );
-
-}
-
-
-
-
-
-// ======================
-// SUMMARY
-// ======================
-
-function renderSummary(
-  summary,
-  entries
-) {
-
-  const budget =
-    getSettings()
-      .monthlyBudget;
-
-
-
-  const achievement =
-
-    budget
-
-      ? (
-
-          summary.totalRevenue /
-
-          budget
-
-        ) * 100
-
-      : 0;
-
-
-
-  setText(
-    "summaryRevenueCard",
-    money(
-      summary.totalRevenue
-    )
-  );
-
-
-
-  setText(
-    "summaryBudgetCard",
-    money(
-      budget
-    )
-  );
-
-
-
-  const best =
-    getBestEntry(
-      entries
-    );
-
-
-
-  const worst =
-    getWorstEntry(
-      entries
-    );
-
-
-
-  setText(
-    "bestDayCard",
-
-    best
-
-      ? formatDate(
-          best.date
-        )
-
-      : "-"
-  );
-
-
-
-  setText(
-    "worstDayCard",
-
-    worst
-
-      ? formatDate(
-          worst.date
-        )
-
-      : "-"
-  );
-
-
-
-  paintKpiColor(
-    "summaryRevenueCard",
-    achievement
-  );
-
-}
-
-
-
-
-
-// ======================
-// HELPERS
-// ======================
-
-function setText(
-  id,
-  value
-) {
-
-  const el =
-    document.getElementById(
-      id
-    );
-
-
-  if (
-    el
-  ) {
-
-    el.innerHTML =
-      value;
-
-  }
-
-}
-
-
-
-
-
-function money(
-  value
-) {
-
-  return (
-
-    getSettings()
-      .currency +
-
-    Number(
-      value || 0
-    ).toLocaleString()
-
-  );
-
-}
-
-
-
-
-
-function percent(
-  value
-) {
-
-  return (
-
-    Number(
-      value || 0
-    ).toFixed(
-      1
-    ) + "%"
-
-  );
-
-}
-
-
-
-
-
-function formatDate(
-  value
-) {
-
-  return new Date(
-    value
-  ).toLocaleDateString(
-    "en-GB"
-  );
-
-}
-
-
-
-
-
-function paintKpiColor(
-  id,
-  achievement
-) {
-
-  const el =
-    document.getElementById(
-      id
-    );
-
-
-
-  if (
-    !el
-  ) return;
-
-
-
-  el.classList.remove(
-
-    "text-green-600",
-
-    "text-orange-500",
-
-    "text-red-600"
-
-  );
-
-
-
-  if (
-    achievement >= 100
-  ) {
-
-    el.classList.add(
-      "text-green-600"
-    );
-
-  }
-
-  else if (
-    achievement >= 80
-  ) {
-
-    el.classList.add(
-      "text-orange-500"
-    );
-
-  }
-
-  else {
-
-    el.classList.add(
-      "text-red-600"
-    );
-
-  }
-
-}
+document.addEventListener('DOMContentLoaded', initializeDashboard);
