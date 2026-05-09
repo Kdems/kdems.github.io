@@ -6,6 +6,8 @@ let selectedMonth =
 
 
 
+
+
 document.addEventListener(
   "DOMContentLoaded",
   initDashboard
@@ -28,7 +30,7 @@ function initDashboard() {
 
 
 // ====================
-// FILTER
+// FILTERS
 // ====================
 
 function setupFilters() {
@@ -38,64 +40,47 @@ function setupFilters() {
       "yearFilter"
     );
 
+
   const monthFilter =
     document.getElementById(
       "monthFilter"
     );
 
 
+
   if (
     yearFilter
   ) {
 
+    yearFilter.innerHTML =
+      "";
+
+
+
     for (
-      let y = 2025;
-      y <= 2040;
-      y++
+      let year = 2025;
+      year <= 2040;
+      year++
     ) {
 
       yearFilter.innerHTML += `
+
         <option
-          value="${y}">
-          ${y}
+          value="${year}">
+
+          ${year}
+
         </option>
+
       `;
 
     }
 
-  }
 
-
-
-  if (
-    monthFilter
-  ) {
-
-    for (
-      let m = 1;
-      m <= 12;
-      m++
-    ) {
-
-      monthFilter.innerHTML += `
-        <option
-          value="${m}">
-          ${m}
-        </option>
-      `;
-
-    }
-
-  }
-
-
-
-  if (
-    yearFilter
-  ) {
 
     yearFilter.value =
       selectedYear;
+
 
 
     yearFilter.onchange =
@@ -106,6 +91,7 @@ function setupFilters() {
             this.value
           );
 
+
         renderDashboard();
 
       };
@@ -114,12 +100,41 @@ function setupFilters() {
 
 
 
+
+
   if (
     monthFilter
   ) {
 
+    monthFilter.innerHTML =
+      "";
+
+
+
+    for (
+      let month = 1;
+      month <= 12;
+      month++
+    ) {
+
+      monthFilter.innerHTML += `
+
+        <option
+          value="${month}">
+
+          ${month}
+
+        </option>
+
+      `;
+
+    }
+
+
+
     monthFilter.value =
       selectedMonth;
+
 
 
     monthFilter.onchange =
@@ -129,6 +144,7 @@ function setupFilters() {
           Number(
             this.value
           );
+
 
         renderDashboard();
 
@@ -155,38 +171,46 @@ function renderDashboard() {
     );
 
 
-  const data =
+
+  const summary =
     calculatePeriodSummary(
       entries
     );
 
 
-  renderAlerts(
-    data,
+
+  renderExecutiveAlerts(
+    summary,
     entries
   );
+
 
   renderYtd(
-    data
+    summary
   );
+
 
   renderMtd(
-    data,
+    summary,
     entries
   );
+
 
   renderGop(
-    data
+    summary
   );
 
-  renderFoodBeverage(
-    data
+
+  renderFoodAndBeverage(
+    summary
   );
 
-  renderSummary(
-    data,
+
+  renderMonthlySummary(
+    summary,
     entries
   );
+
 
   renderRecentEntries(
     entries
@@ -216,8 +240,8 @@ function renderDashboard() {
 // ALERTS
 // ====================
 
-function renderAlerts(
-  data,
+function renderExecutiveAlerts(
+  summary,
   entries
 ) {
 
@@ -225,31 +249,34 @@ function renderAlerts(
     getSettings();
 
 
-  const budget =
-    Number(
-      settings.monthlyBudget || 0
-    );
 
-
-  const achievement =
+  const revenueAchievement =
     percentage(
-      data.totalRevenue,
-      budget
+
+      summary.totalRevenue,
+
+      settings.monthlyBudget
+
     );
+
 
 
   setText(
+
     "revenueAlertCard",
 
-    achievement >= 100
+    revenueAchievement >= 100
 
       ? "🟢 ON TRACK"
 
       : "🔴 BELOW"
+
   );
 
 
+
   setText(
+
     "projectionAlertCard",
 
     entries.length
@@ -257,20 +284,35 @@ function renderAlerts(
       ? "🟢 LIVE"
 
       : "⚪ NO DATA"
+
   );
 
 
+
   setText(
+
     "foodAlertCard",
 
-    "🟢 LIVE"
+    summary.foodCostPercent <= 35
+
+      ? "🟢 GOOD"
+
+      : "🔴 HIGH"
+
   );
 
 
+
   setText(
+
     "marginAlertCard",
 
-    "🟢 LIVE"
+    summary.gopMargin >= 40
+
+      ? "🟢 STRONG"
+
+      : "🔴 LOW"
+
   );
 
 }
@@ -280,49 +322,68 @@ function renderAlerts(
 
 
 // ====================
-// KPI
+// YTD
 // ====================
 
 function renderYtd(
-  data
+  summary
 ) {
 
   const settings =
     getSettings();
 
 
+
+  const achievement =
+    percentage(
+
+      summary.totalRevenue,
+
+      settings.annualRevenueTarget
+
+    );
+
+
+
   setText(
     "ytdRevenueCard",
+
     money(
-      data.totalRevenue
+      summary.totalRevenue
     )
   );
+
 
 
   setText(
     "ytdBudgetCard",
+
     money(
-      settings.annualRevenueTarget || 0
+      settings.annualRevenueTarget
     )
   );
+
 
 
   setText(
     "ytdAchievementCard",
+
     percent(
-      percentage(
-        data.totalRevenue,
-        settings.annualRevenueTarget
-      )
+      achievement
     )
   );
 
 
+
   setText(
     "ytdVarianceCard",
+
     money(
-      data.totalRevenue -
+
+      summary.totalRevenue -
+
       settings.annualRevenueTarget
+
     )
   );
 
@@ -332,8 +393,12 @@ function renderYtd(
 
 
 
+// ====================
+// MTD
+// ====================
+
 function renderMtd(
-  data,
+  summary,
   entries
 ) {
 
@@ -341,21 +406,29 @@ function renderMtd(
     getSettings();
 
 
-  const days =
+
+  const daysPassed =
     entries.length || 1;
 
 
+
   const avg =
-    data.totalRevenue /
-    days;
+    summary.totalRevenue /
+    daysPassed;
+
 
 
   const daysInMonth =
     new Date(
+
       selectedYear,
+
       selectedMonth,
+
       0
+
     ).getDate();
+
 
 
   const projection =
@@ -363,43 +436,56 @@ function renderMtd(
     daysInMonth;
 
 
+
   setText(
     "mtdRevenueCard",
+
     money(
-      data.totalRevenue
+      summary.totalRevenue
     )
   );
 
 
+
   setText(
     "dailyPaceCard",
+
     money(
       avg
     )
   );
 
 
+
   setText(
     "projectionCard",
+
     money(
       projection
     )
   );
 
 
+
   setText(
     "projectionGapCard",
+
     money(
+
       projection -
+
       settings.monthlyBudget
+
     )
   );
+
 
 
   setText(
     "daysLeftCard",
+
     daysInMonth -
-      days
+      daysPassed
   );
 
 }
@@ -408,35 +494,49 @@ function renderMtd(
 
 
 
+// ====================
+// GOP
+// ====================
+
 function renderGop(
-  data
+  summary
 ) {
 
   setText(
     "gopRevenueCard",
+
     money(
-      data.totalRevenue
+      summary.totalRevenue
     )
   );
+
+
 
   setText(
     "gopCostCard",
+
     money(
-      data.totalCost
+      summary.totalCost
     )
   );
+
+
 
   setText(
     "gopMainCard",
+
     money(
-      data.totalGop
+      summary.totalGop
     )
   );
 
+
+
   setText(
     "gopMarginCard",
+
     percent(
-      data.gopMargin
+      summary.gopMargin
     )
   );
 
@@ -446,41 +546,49 @@ function renderGop(
 
 
 
-function renderFoodBeverage(
-  data
+// ====================
+// F&B
+// ====================
+
+function renderFoodAndBeverage(
+  summary
 ) {
 
   setText(
     "foodRevenueCard",
+
     money(
-      data.totalFoodRevenue
+      summary.totalFoodRevenue
     )
   );
+
+
 
   setText(
     "bevRevenueCard",
+
     money(
-      data.totalBeverageRevenue
+      summary.totalBeverageRevenue
     )
   );
+
+
 
   setText(
     "foodMixCard",
+
     percent(
-      percentage(
-        data.totalFoodRevenue,
-        data.totalRevenue
-      )
+      summary.foodMix
     )
   );
 
+
+
   setText(
     "bevMixCard",
+
     percent(
-      percentage(
-        data.totalBeverageRevenue,
-        data.totalRevenue
-      )
+      summary.beverageMix
     )
   );
 
@@ -490,25 +598,34 @@ function renderFoodBeverage(
 
 
 
-function renderSummary(
-  data,
+// ====================
+// SUMMARY
+// ====================
+
+function renderMonthlySummary(
+  summary,
   entries
 ) {
 
   setText(
     "summaryRevenueCard",
+
     money(
-      data.totalRevenue
+      summary.totalRevenue
     )
   );
 
+
+
   setText(
     "summaryBudgetCard",
+
     money(
       getSettings()
-        .monthlyBudget || 0
+        .monthlyBudget
     )
   );
+
 
 
   const best =
@@ -523,6 +640,7 @@ function renderSummary(
     );
 
 
+
   setText(
     "bestDayCard",
 
@@ -534,6 +652,7 @@ function renderSummary(
 
       : "-"
   );
+
 
 
   setText(
@@ -554,18 +673,22 @@ function renderSummary(
 
 
 
+// ====================
+// RECENT
+// ====================
+
 function renderRecentEntries(
   entries
 ) {
 
-  const el =
+  const container =
     document.getElementById(
       "recentEntriesList"
     );
 
 
   if (
-    !el
+    !container
   ) return;
 
 
@@ -574,7 +697,7 @@ function renderRecentEntries(
     !entries.length
   ) {
 
-    el.innerHTML =
+    container.innerHTML =
       `
       <div class="text-slate-400">
         No entries
@@ -587,7 +710,7 @@ function renderRecentEntries(
 
 
 
-  el.innerHTML =
+  container.innerHTML =
     entries
       .slice()
       .reverse()
@@ -605,20 +728,27 @@ function renderRecentEntries(
             );
 
 
+
           return `
 
             <div class="grid grid-cols-2 border-b py-3">
 
               <div>
+
                 ${formatDate(
                   entry.date
                 )}
+
               </div>
 
+
+
               <div class="text-right font-bold">
+
                 ${money(
                   total
                 )}
+
               </div>
 
             </div>
@@ -648,6 +778,7 @@ function getBestEntry(
   ) return null;
 
 
+
   return entries.reduce(
     (
       best,
@@ -665,6 +796,7 @@ function getBestEntry(
         );
 
 
+
       const currentValue =
 
         Number(
@@ -674,6 +806,7 @@ function getBestEntry(
         Number(
           current.beverageRevenue || 0
         );
+
 
 
       return
@@ -692,6 +825,8 @@ function getBestEntry(
 
 
 
+
+
 function getWorstEntry(
   entries
 ) {
@@ -699,6 +834,7 @@ function getWorstEntry(
   if (
     !entries.length
   ) return null;
+
 
 
   return entries.reduce(
@@ -718,6 +854,7 @@ function getWorstEntry(
         );
 
 
+
       const currentValue =
 
         Number(
@@ -727,6 +864,7 @@ function getWorstEntry(
         Number(
           current.beverageRevenue || 0
         );
+
 
 
       return
@@ -742,6 +880,8 @@ function getWorstEntry(
   );
 
 }
+
+
 
 
 
@@ -769,6 +909,8 @@ function setText(
 
 
 
+
+
 function percentage(
   actual,
   target
@@ -777,6 +919,7 @@ function percentage(
   if (
     !target
   ) return 0;
+
 
 
   return (
@@ -788,18 +931,25 @@ function percentage(
 
 
 
+
+
 function percent(
   value
 ) {
 
   return (
+
     Number(
       value || 0
-    ).toFixed(1) +
-    "%"
+    ).toFixed(1)
+
+    + "%"
+
   );
 
 }
+
+
 
 
 
@@ -825,6 +975,8 @@ function money(
   );
 
 }
+
+
 
 
 
