@@ -9,8 +9,6 @@ document.addEventListener(
 
 function initDashboard() {
 
-  seedSampleData();
-
   setupFilters();
 
   refreshDashboard();
