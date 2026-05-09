@@ -1,1 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <title>
+    SKYBAR Settings
+  </title>
+
+  <link rel="icon" href="data:,">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+
+<body class="bg-slate-100 font-sans">
+
+<div class="flex min-h-screen">
+
+
+
+  <!-- SIDEBAR -->
+  <aside class="w-64 bg-slate-950 text-white p-6">
+
+    <h1 class="text-4xl font-bold mb-10">
+      SKYBAR
+    </h1>
+
+
+
+    <nav class="space-y-3">
+
+      <a
+        href="index.html"
+        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
+        Dashboard
+      </a>
+
+      <a
+        href="entry.html"
+        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
+        Daily Entry
+      </a>
+
+      <a
+        href="review.html"
+        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
+        Operating Review
+      </a>
+
+      <a
+        href="reports.html"
+        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
+        Reports
+      </a>
+
+      <a
+        href="settings.html"
+        class="block bg-slate-800 rounded-xl px-4 py-3">
+        Settings
+      </a>
+
+    </nav>
+
+  </aside>
+
+
+
+
+
+
+
+
+  <!-- MAIN -->
+  <main class="flex-1 p-8 space-y-6">
+
+
+    <div>
+
+      <h2 class="text-4xl font-bold">
+        Settings
+      </h2>
+
+      <p class="text-slate-500">
+        Financial targets and system preferences
+      </p>
+
+    </div>
+
+
+
+
+
+
+
+
+    <!-- FORM -->
+    <section class="bg-white rounded-3xl p-6 shadow">
+
+      <form
+        id="settingsForm"
+        class="grid grid-cols-2 gap-4">
+
+
+        <input
+          id="currencyInput"
+          type="text"
+          placeholder="Currency (RM)"
+          class="border rounded-xl p-3">
+
+
+
+        <input
+          id="monthlyBudgetInput"
+          type="number"
+          placeholder="Monthly Budget"
+          class="border rounded-xl p-3">
+
+
+
+        <input
+          id="annualTargetInput"
+          type="number"
+          placeholder="Annual Revenue Target"
+          class="border rounded-xl p-3">
+
+
+
+        <input
+          id="lyFoodRevenueInput"
+          type="number"
+          placeholder="LY Food Revenue"
+          class="border rounded-xl p-3">
+
+
+
+        <input
+          id="lyBeverageRevenueInput"
+          type="number"
+          placeholder="LY Beverage Revenue"
+          class="border rounded-xl p-3">
+
+
+
+        <button
+          type="submit"
+          class="bg-slate-900 text-white rounded-xl p-3">
+
+          Save Settings
+
+        </button>
+
+      </form>
+
+    </section>
+
+
+  </main>
+
+</div>
+
+
+
+
+
+<script src="assets/js/settings.js"></script>
+<script src="assets/js/settings-page.js"></script>
+
+</body>
+</html>
