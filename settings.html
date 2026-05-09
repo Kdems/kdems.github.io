@@ -1,27 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
-
-  <title>
-    SKYBAR Settings
-  </title>
-
-  <link rel="icon" href="data:,">
+  <title>SKYBAR Settings</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-
 </head>
 
-
-
-<body class="bg-slate-100 font-sans">
+<body class="bg-slate-100">
 
 <div class="flex min-h-screen">
 
@@ -34,44 +23,36 @@
       SKYBAR
     </h1>
 
-
-
     <nav class="space-y-3">
 
-      <a
-        href="index.html"
-        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
-        Dashboard
+      <a href="index.html"
+         class="block px-4 py-3 rounded-xl">
+         Dashboard
       </a>
 
-      <a
-        href="entry.html"
-        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
-        Daily Entry
+      <a href="entry.html"
+         class="block px-4 py-3 rounded-xl">
+         Daily Entry
       </a>
 
-      <a
-        href="review.html"
-        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
-        Operating Review
+      <a href="review.html"
+         class="block px-4 py-3 rounded-xl">
+         Operating Review
       </a>
 
-      <a
-        href="reports.html"
-        class="block hover:bg-slate-800 rounded-xl px-4 py-3">
-        Reports
+      <a href="reports.html"
+         class="block px-4 py-3 rounded-xl">
+         Reports
       </a>
 
-      <a
-        href="settings.html"
-        class="block bg-slate-800 rounded-xl px-4 py-3">
-        Settings
+      <a href="settings.html"
+         class="block bg-slate-800 px-4 py-3 rounded-xl">
+         Settings
       </a>
 
     </nav>
 
   </aside>
-
 
 
 
@@ -90,7 +71,7 @@
       </h2>
 
       <p class="text-slate-500">
-        Financial targets and system preferences
+        Financial controls & targets
       </p>
 
     </div>
@@ -102,7 +83,6 @@
 
 
 
-    <!-- FORM -->
     <section class="bg-white rounded-3xl p-6 shadow">
 
       <form
@@ -110,9 +90,9 @@
         class="grid grid-cols-2 gap-4">
 
 
+
         <input
           id="currencyInput"
-          type="text"
           placeholder="Currency (RM)"
           class="border rounded-xl p-3">
 
@@ -135,28 +115,37 @@
 
 
         <input
-          id="lyFoodRevenueInput"
+          id="foodCostPercentInput"
           type="number"
-          placeholder="LY Food Revenue"
+          placeholder="Food Cost %"
           class="border rounded-xl p-3">
 
 
 
         <input
-          id="lyBeverageRevenueInput"
+          id="bevCostPercentInput"
           type="number"
-          placeholder="LY Beverage Revenue"
+          placeholder="Beverage Cost %"
+          class="border rounded-xl p-3">
+
+
+
+        <input
+          id="fixedCostPercentInput"
+          type="number"
+          placeholder="Fixed Cost %"
           class="border rounded-xl p-3">
 
 
 
         <button
           type="submit"
-          class="bg-slate-900 text-white rounded-xl p-3">
+          class="bg-slate-950 text-white rounded-xl p-3">
 
           Save Settings
 
         </button>
+
 
       </form>
 
@@ -166,9 +155,6 @@
   </main>
 
 </div>
-
-
-
 
 
 <script src="assets/js/settings.js"></script>
